@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WindowsFormsApplication2
 {
     public partial class Form1 : Form
     {
+        //кажется, нужно профичить всякие там ифы в воде порядка и числа на обыск
         double a = 0;
         double b = 0;
         double h = 0;
@@ -134,6 +136,9 @@ namespace WindowsFormsApplication2
 
         private void button3_Click(object sender, EventArgs e)
         {
+            chart1.Series["Series1"].Points.Clear();
+            chart1.Series["Series2"].Points.Clear();
+            chart1.Series["Series3"].Points.Clear();
             num = int.TryParse(textBox5.Text, out order);
             if (!num)
             {
@@ -162,79 +167,109 @@ namespace WindowsFormsApplication2
             if (radioButton1.Checked == true)
             {
                 //Lagrandg
-                int n = order;
-                double step = h;
-                    double lagrangePol = 0;
-
-                    for (int i = 0; i < n; i++)
-                    {
-                        double basicsPol = 1;
-                        for (int j = 0; j < n; j++)
-                        {
-                            if (j != i)
-                            {
-                                basicsPol *= (x - listx[j]) / (listx[i] - listx[j]);
-                            }
-                        }
-                        lagrangePol += basicsPol * listy[i];
-                    }
-
-                    textBox7.Text = "Решение:  y = " + lagrangePol.ToString();
+                textBox7.Text = "Решение:  y = " + lagrandg(order, h,x).ToString();
+                double y = 0;
+                for (int i = 0; i < listx.Count; i++)
+                {
+                    y = lagrandg(order, h, listx[i]);
+                    chart1.Series["Series2"].Points.AddXY(listx[i], y);
+                }
+                chart1.Series["Series2"].ChartType = SeriesChartType.Line;
                 
             }
             if (radioButton2.Checked==true)
             {
                 //Neuton
-                int n = order;
-                double step = h;
-                double[,] mas = new double[n + 2, n + 1];
-                for (int i = 0; i < 2; i++)
+                textBox7.Text = "Решение:  y = " + neuton(order,h,x).ToString();
+                double y = 0;
+                for (int i = 0; i < listx.Count; i++)
                 {
-                    for (int j = 0; j < n + 1; j++)
-                    {
-                        if (i == 0)
-                            mas[i, j] = listx[j];
-                        else if (i == 1)
-                            mas[i, j] = listy[j];
-                    }
+                    y = neuton(order, h, listx[i]);
+                    chart1.Series["Series3"].Points.AddXY(listx[i], y);
                 }
-                int m = n;
-                for (int i = 2; i < n + 2; i++)
-                {
-                    for (int j = 0; j < m; j++)
-                    {
-                        mas[i, j] = mas[i - 1, j + 1] - mas[i - 1, j];
-                    }
-                    m--;
-                }
-
-                double[] dy0 = new double[n + 1];
-
-                for (int i = 0; i < n + 1; i++)
-                {
-                    dy0[i] = mas[i + 1, 0];
-                }
-
-                double res = dy0[0];
-                double[] xn = new double[n];
-                xn[0] = x - mas[0, 0];
-
-                for (int i = 1; i < n; i++)
-                {
-                    double ans = xn[i - 1] * (x - mas[0, i]);
-                    xn[i] = ans;
-                    ans = 0;
-                }
-
-                int m1 = n + 1;
-                int fact = 1;
-                for (int i = 1; i < m1; i++)
-                {
-                    fact = fact * i;
-                    res = res + (dy0[i] * xn[i - 1]) / (fact * Math.Pow(step, i));
-                }
-                textBox7.Text ="Решение:  y = "+ res.ToString();
+                chart1.Series["Series3"].ChartType = SeriesChartType.Line;
             }
+
+
+            //начинается работа с графиком
+            //chart1.Series["standart"].Points.Clear();
+            for (int i=0;i<listx.Count;i++)
+            {
+                chart1.Series["Series1"].Points.AddXY(listx[i], listy[i]);
+            }
+            chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+           
+            //lagrandg
+            
+        }
+        public double lagrandg (int n, double step,double x)
+        {
+
+            double lagrangePol = 0;
+
+            for (int i = 0; i < n; i++)
+            {
+                double basicsPol = 1;
+                for (int j = 0; j < n; j++)
+                {
+                    if (j != i)
+                    {
+                        basicsPol *= (x - listx[j]) / (listx[i] - listx[j]);
+                    }
+                }
+                lagrangePol += basicsPol * listy[i];
+            }
+            return lagrangePol;
+        }
+        public double neuton (int n, double step,double x)
+        {
+            double[,] mas = new double[n + 2, n + 1];
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < n + 1; j++)
+                {
+                    if (i == 0)
+                        mas[i, j] = listx[j];
+                    else if (i == 1)
+                        mas[i, j] = listy[j];
+                }
+            }
+            int m = n;
+            for (int i = 2; i < n + 2; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    mas[i, j] = mas[i - 1, j + 1] - mas[i - 1, j];
+                }
+                m--;
+            }
+
+            double[] dy0 = new double[n + 1];
+
+            for (int i = 0; i < n + 1; i++)
+            {
+                dy0[i] = mas[i + 1, 0];
+            }
+
+            double res = dy0[0];
+            double[] xn = new double[n];
+            xn[0] = x - mas[0, 0];
+
+            for (int i = 1; i < n; i++)
+            {
+                double ans = xn[i - 1] * (x - mas[0, i]);
+                xn[i] = ans;
+                ans = 0;
+            }
+
+            int m1 = n + 1;
+            int fact = 1;
+            for (int i = 1; i < m1; i++)
+            {
+                fact = fact * i;
+                res = res + (dy0[i] * xn[i - 1]) / (fact * Math.Pow(step, i));
+            }
+            return res;
         }
     }
 }
