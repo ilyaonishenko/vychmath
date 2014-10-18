@@ -139,67 +139,81 @@ namespace WindowsFormsApplication2
             chart1.Series["Series1"].Points.Clear();
             chart1.Series["Series2"].Points.Clear();
             chart1.Series["Series3"].Points.Clear();
+            int count = 0;
             num = int.TryParse(textBox5.Text, out order);
             if (!num)
             {
                 MessageBox.Show("Вы не ввели конкретный порядок :(");
                 textBox5.Text = "";
+                count++;
             }
-            if (order<1||order>4)
+            if (count == 0)
             {
-                MessageBox.Show("Вы ввели неправильный порядок. Он может быть только от 1 до 4");
+                if (order < 1 || order > 4)
+                {
+                    MessageBox.Show("Вы ввели неправильный порядок. Он может быть только от 1 до 4");
+                    textBox5.Text = "";
+                }
             }
             num = double.TryParse(textBox6.Text,out x);
             if (!num)
             {
                 MessageBox.Show("Вы ввели что-то непонятное в поле для х");
                 textBox6.Text = "";
+                count++;
             }
-            if (x<a||x>b)
+            if (count == 0)
             {
-                MessageBox.Show("Конечный х может находиться только среди значений, для которых определен ответ.\nЭти значения: "+a+" и "+b);
-                textBox6.Text = "";
-            }
-            if (radioButton1.Checked ==false&&radioButton2.Checked ==false)
-            {
-                MessageBox.Show("Вы, кажется, не выбрали метод, которым нужно считать");
-            }
-            if (radioButton1.Checked == true)
-            {
-                //Lagrandg
-                textBox7.Text = "Решение:  y = " + lagrandg(order, h,x).ToString();
-                double y = 0;
-                for (int i = 0; i < listx.Count; i++)
+                if (x < a || x > b)
                 {
-                    y = lagrandg(order, h, listx[i]);
-                    chart1.Series["Series2"].Points.AddXY(listx[i], y);
+                    MessageBox.Show("Конечный х может находиться только среди значений, для которых определен ответ.\nЭти значения: " + a + " и " + b);
+                    textBox6.Text = "";
+                    count++;
                 }
-                chart1.Series["Series2"].ChartType = SeriesChartType.Line;
-                
-            }
-            if (radioButton2.Checked==true)
-            {
-                //Neuton
-                textBox7.Text = "Решение:  y = " + neuton(order,h,x).ToString();
-                double y = 0;
-                for (int i = 0; i < listx.Count; i++)
+                if (count == 0)
                 {
-                    y = neuton(order, h, listx[i]);
-                    chart1.Series["Series3"].Points.AddXY(listx[i], y);
-                }
-                chart1.Series["Series3"].ChartType = SeriesChartType.Line;
-            }
+                    if (radioButton1.Checked == false && radioButton2.Checked == false)
+                    {
+                        MessageBox.Show("Вы, кажется, не выбрали метод, которым нужно считать");
+                    }
+                    if (radioButton1.Checked == true)
+                    {
+                        //Lagrandg
+                        textBox7.Text = "Решение:  y = " + lagrandg(order, h, x).ToString();
+                        double y = 0;
+                        for (int i = 0; i < listx.Count; i++)
+                        {
+                            y = lagrandg(order, h, listx[i]);
+                            chart1.Series["Series2"].Points.AddXY(listx[i], y);
+                        }
+                        chart1.Series["Series2"].ChartType = SeriesChartType.Line;
+
+                    }
+                    if (radioButton2.Checked == true)
+                    {
+                        //Neuton
+                        textBox7.Text = "Решение:  y = " + neuton(order, h, x).ToString();
+                        double y = 0;
+                        for (int i = 0; i < listx.Count; i++)
+                        {
+                            y = neuton(order, h, listx[i]);
+                            chart1.Series["Series3"].Points.AddXY(listx[i], y);
+                        }
+                        chart1.Series["Series3"].ChartType = SeriesChartType.Line;
+                    }
 
 
-            //начинается работа с графиком
-            //chart1.Series["standart"].Points.Clear();
-            for (int i=0;i<listx.Count;i++)
-            {
-                chart1.Series["Series1"].Points.AddXY(listx[i], listy[i]);
+                    //начинается работа с графиком
+                    for (int i = 0; i < listx.Count; i++)
+                    {
+                        chart1.Series["Series1"].Points.AddXY(listx[i], listy[i]);
+                    }
+                    chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+                    //как началась, так и закончилась
+                }
             }
-            chart1.Series["Series1"].ChartType = SeriesChartType.Line;
            
-            //lagrandg
+            //lagrandge poor-poor lagrange :(
             
         }
         public double lagrandg (int n, double step,double x)
