@@ -113,10 +113,10 @@ namespace WindowsFormsApplication2
                 }
                 for (double i = a; i <= b + 0.01; i += h)
                 {
-                    listx.Add(i);//нужно ли
+                    listx.Add(i);
                     listxy.Add(i);
                     y = Math.Round(Math.Pow(Math.Sin(i), 2) * Math.Pow(Math.E, i), 4);
-                    listy.Add(y);//нужно ли
+                    listy.Add(y);
                     listxy.Add(y);
                 }
                 for (int i = 0; i < listxy.Count; i += 2)
@@ -125,7 +125,14 @@ namespace WindowsFormsApplication2
                     textBox4.Text += ("   " + Math.Round(listxy[i], 2) + "   ||   " + listxy[i + 1].ToString() + "   " + Environment.NewLine);
                 }
                 wr.Close();
-                button3.Enabled = true;
+                if (listx.Count < 5)
+                {
+                    MessageBox.Show("Извините, но количество точек должно быть больше или 5");
+                }
+                else
+                {
+                    button3.Enabled = true;
+                }
             }
         }
 
@@ -136,9 +143,9 @@ namespace WindowsFormsApplication2
 
         private void button3_Click(object sender, EventArgs e)
         {
-            chart1.Series["Series1"].Points.Clear();
-            chart1.Series["Series2"].Points.Clear();
-            chart1.Series["Series3"].Points.Clear();
+            chart1.Series["Функция"].Points.Clear();
+            chart1.Series["Лагранж"].Points.Clear();
+            chart1.Series["Ньютон"].Points.Clear();
             int count = 0;
             num = int.TryParse(textBox5.Text, out order);
             if (!num)
@@ -155,6 +162,10 @@ namespace WindowsFormsApplication2
                     textBox5.Text = "";
                 }
             }
+            if (order == 3)
+            {
+                order = 4;
+            }
             num = double.TryParse(textBox6.Text,out x);
             if (!num)
             {
@@ -162,6 +173,12 @@ namespace WindowsFormsApplication2
                 textBox6.Text = "";
                 count++;
             }
+            if (x==b)
+            {
+                MessageBox.Show("К сожалению, вы ввели x = b. Но это число не может быть вычислено интерполированием :(");
+            }
+            //looking for index of i
+            List<double> checking = new List<double>();
             if (count == 0)
             {
                 if (x < a || x > b)
@@ -178,37 +195,44 @@ namespace WindowsFormsApplication2
                     }
                     if (radioButton1.Checked == true)
                     {
-                        //Lagrandg
-                        textBox7.Text = "Решение:  y = " + lagrandg(order, h, x).ToString();
+                        //Lagrandge
+                        textBox7.Text = "Решение:  y = " + Math.Round(lagrandg(order, h, x),4).ToString();//tut
                         double y = 0;
-                        for (int i = 0; i < listx.Count; i++)
+                        for (int i = 0; i < listx.Count-1; i++)
                         {
-                            y = lagrandg(order, h, listx[i]);
-                            chart1.Series["Series2"].Points.AddXY(listx[i], y);
+                            
+                                y = lagrandg(order, h, listx[i]);
+                                chart1.Series["Лагранж"].Points.AddXY(listx[i], y);
+                            
+
                         }
-                        chart1.Series["Series2"].ChartType = SeriesChartType.Line;
+                        chart1.Series["Лагранж"].ChartType = SeriesChartType.Line;
 
                     }
                     if (radioButton2.Checked == true)
                     {
-                        //Neuton
-                        textBox7.Text = "Решение:  y = " + neuton(order, h, x).ToString();
+                        //Newton
+                        textBox7.Text = "Решение:  y = " + Math.Round(neuton(order, h, x), 4).ToString();//tut
                         double y = 0;
-                        for (int i = 0; i < listx.Count; i++)
+
+                        for (int i = 0; i < listx.Count-1; i++)
                         {
                             y = neuton(order, h, listx[i]);
-                            chart1.Series["Series3"].Points.AddXY(listx[i], y);
+                            chart1.Series["Ньютон"].Points.AddXY(listx[i], y);
                         }
-                        chart1.Series["Series3"].ChartType = SeriesChartType.Line;
+                        
+                        chart1.Series["Ньютон"].ChartType = SeriesChartType.Line;
                     }
 
 
                     //начинается работа с графиком
+
                     for (int i = 0; i < listx.Count; i++)
                     {
-                        chart1.Series["Series1"].Points.AddXY(listx[i], listy[i]);
+                        chart1.Series["Функция"].Points.AddXY(listx[i], listy[i]);
                     }
-                    chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+                    
+                    chart1.Series["Функция"].ChartType = SeriesChartType.Line;
                     //как началась, так и закончилась
                 }
             }
@@ -218,26 +242,37 @@ namespace WindowsFormsApplication2
         }
         public double lagrandg (int n, double step,double x)
         {
-
             double lagrangePol = 0;
-
-            for (int i = 0; i < n; i++)
+            int k = 0;
+            for (int i = 0; i < listx.Count-2;i++ )
             {
-                double basicsPol = 1;
-                for (int j = 0; j < n; j++)
+                if (listx[i]<x&&listx[i+2]>x)
                 {
-                    if (j != i)
+                    k = i;
+                    if (k+n>listx.Count)
                     {
-                        basicsPol *= (x - listx[j]) / (listx[i] - listx[j]);
+                        k = k - (k + n - listx.Count);
                     }
+                    break;
                 }
-                lagrangePol += basicsPol * listy[i];
             }
+                for (int i = k; i < n+k; i++)
+                {
+                    double basicsPol = 1;
+                    for (int j = k; j < n+k; j++)
+                    {
+                        if (i != j)
+                        {
+                            basicsPol *= (x - listx[j]) / (listx[i] - listx[j]);
+                        }
+                    }
+                    lagrangePol += basicsPol * listy[i];
+                }
             return lagrangePol;
         }
         public double neuton (int n, double step,double x)
         {
-            double[,] mas = new double[n + 2, n + 1];
+            /*double[,] mas = new double[n + 2, n + 1];
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < n + 1; j++)
@@ -283,7 +318,66 @@ namespace WindowsFormsApplication2
                 fact = fact * i;
                 res = res + (dy0[i] * xn[i - 1]) / (fact * Math.Pow(step, i));
             }
-            return res;
+            return res;*/
+            int k = 0;
+            for (int i = 0; i < listx.Count - 2; i++)
+            {
+                if (listx[i] < x && listx[i + 2] > x)
+                {
+                    k = i;
+                    if (k + n > listx.Count)
+                    {
+                        k = k - (k + n - listx.Count);
+                    }
+                    break;
+                }
+            }
+            double Polinom_Nutona = listy[k];
+            int z = 1;
+            double xx = 1;
+            double yy = 0;
+            double yy_2 = 0;
+            double yy_3 = 0;
+            double fact = 1;
+            for (int i = k; i < n + k; i++)
+            {
+                fact = z * fact;
+                xx = xx * (x - listx[i]);
+                if (z < 3)
+                {
+                    yy = listy[i + 1] - listy[i] - yy;
+                    if (n >= 3)
+                    {
+                        //исправить для порядка три
+                        yy_2 = listy[i + 2] - listy[i + 1] - yy_2;
+                    }
+                    if (n == 4 && i + 3 < listy.Count)
+                    {
+                        yy_3 = listy[i + 3] - listy[i + 3] - yy_3;
+                    }
+                }
+                if (z == 3)
+                {
+                    yy = yy_2 - yy;
+                    if (n >= 3)
+                    {
+                        yy_2 = yy_3 - yy_2;
+                    }
+                }
+                if (z == 4)
+                {
+                    yy = yy + yy_2;
+                }
+                Polinom_Nutona += yy * xx / (fact * Math.Pow(step, z));
+                z++;
+                
+            }
+            return Polinom_Nutona;
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("notepad.exe", "input.txt");
         }
     }
 }
