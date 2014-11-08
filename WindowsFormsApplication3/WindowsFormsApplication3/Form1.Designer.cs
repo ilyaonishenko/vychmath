@@ -48,6 +48,8 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,6 +109,7 @@
             this.button1.TabIndex = 6;
             this.button1.Text = "Рассчитать значения функции";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label4
             // 
@@ -124,6 +127,7 @@
             this.button2.TabIndex = 8;
             this.button2.Text = "Открыть файл";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label5
             // 
@@ -169,12 +173,13 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(34, 536);
+            this.button3.Location = new System.Drawing.Point(34, 622);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(200, 58);
             this.button3.TabIndex = 13;
             this.button3.Text = "Рассчитать";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // chart1
             // 
@@ -182,19 +187,19 @@
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(294, 31);
+            this.chart1.Location = new System.Drawing.Point(307, 31);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(900, 686);
+            this.chart1.Size = new System.Drawing.Size(996, 761);
             this.chart1.TabIndex = 14;
             this.chart1.Text = "chart1";
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(34, 600);
+            this.button4.Location = new System.Drawing.Point(34, 686);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(200, 58);
             this.button4.TabIndex = 15;
@@ -204,7 +209,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(34, 664);
+            this.button5.Location = new System.Drawing.Point(34, 750);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(200, 58);
             this.button5.TabIndex = 16;
@@ -212,11 +217,30 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(29, 544);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(251, 26);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Кол-во подынтегралов:";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(34, 585);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(200, 31);
+            this.textBox4.TabIndex = 18;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1225, 729);
+            this.ClientSize = new System.Drawing.Size(1342, 816);
+            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.chart1);
@@ -261,6 +285,8 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox4;
     }
 }
 
