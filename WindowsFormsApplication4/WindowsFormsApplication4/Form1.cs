@@ -41,8 +41,8 @@ namespace WindowsFormsApplication4
             textBox6.ReadOnly = true;
             textBox7.ReadOnly = true;
             textBox8.ReadOnly = true;
-            label6.Visible = false;
-            textBox6.Visible = false;
+            //label6.Visible = false;
+            //textBox6.Visible = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -93,7 +93,7 @@ namespace WindowsFormsApplication4
                 count++;
             }
             // input ended
-            StreamWriter sw = new StreamWriter("output.txt");
+            StreamWriter sw = new StreamWriter("output.txt",false);
             if (count == 0)
             {
                 sw.WriteLine("x\ty");
@@ -150,7 +150,7 @@ namespace WindowsFormsApplication4
                     listy_v1.Add(Math.Round(double.Parse(listt[i]),2));
 
             }
-            double k=0;
+           /* double k=0;
             for (int i=0;i<listx_v1.Count-1;i++)
             {
                 k=0;
@@ -178,11 +178,11 @@ namespace WindowsFormsApplication4
                         k = 0;
                     }
                 }
-            }
+            }*/
             int counterX =0;
             int counterY = 0;
             double comparer = 0;
-            for (int i = 0; i < listx_v1.Count;i++ )
+           for (int i = 0; i < listx_v1.Count;i++ )
             {
                 comparer = listx_v1[i];
                 for (int j=0;j<listx_v1.Count;j++)
@@ -192,7 +192,7 @@ namespace WindowsFormsApplication4
                 }
             }
             comparer = 0;
-            for (int i = 0; i < listy_v1.Count; i++)
+            /*for (int i = 0; i < listy_v1.Count; i++)
             {
                 comparer = listy_v1[i];
                 for (int j=0;j<listy_v1.Count;j++)
@@ -200,7 +200,7 @@ namespace WindowsFormsApplication4
                     if (comparer == listy_v1[j])
                         counterY++;
                 }
-            }
+            }*/
             bool go = true;
             StreamWriter sw = new StreamWriter("output.txt",false);
             sw.WriteLine("x\ty");
@@ -210,6 +210,11 @@ namespace WindowsFormsApplication4
             if (counterX>listx_v1.Count||counterY>listy_v1.Count)
             {
                 MessageBox.Show("Проблемы с введенными в файл значениями.");
+                go = false;
+            }
+            if (listy_v1.Count != listx_v1.Count)
+            {
+                MessageBox.Show("Разное количество чисел");
                 go = false;
             }
             if (go == true)
@@ -225,13 +230,13 @@ namespace WindowsFormsApplication4
                     textBox4.Text = "";
                     count++;
                 }
-                if (m >= 10)
+                /*if (m >= 10)
                 {
                     MessageBox.Show("m должно быть меньше 10");
                     m = 0;
                     textBox4.Text = "";
                     count++;
-                }
+                }*/
                 num = double.TryParse(textBox5.Text, out X);
                 if (!num)
                 {
@@ -270,7 +275,54 @@ namespace WindowsFormsApplication4
                     double[,] Beta = new double[0, 0];
                     Beta = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Y, 1);
                     double[,] Obratnaya = new double[1, 1];
-                    Obratnaya = Obr(Peremn);
+                    double uu = 1;
+                    if (uu==0)
+                    {
+                        MessageBox.Show("Определитель матрицы равен 0! Обратной матрицы не существует! введите другие данные!");
+                    }
+                    if (uu!=0)
+                    {
+                        double[,] Grr = new double[1, 1];//Массив нужен для того, чтобы записать в него матрицу, которая равна произведению Obratnaya на Beta
+                        Grr = Gauss(Peremn, Beta);//Получаем массив коэффициентов полинома
+                        double y = 0;
+                        for (int i = 0; i < Grr.GetLength(0); i++)
+                        {
+                            y += Grr[i, 0] * Math.Pow(X, i);
+                        }
+                        textBox7.Text = y.ToString();
+                        double pogreshost = 0;
+                        double[] dif = new double[listy_v1.Count];
+                        double[] f = new double[listy_v1.Count];
+                        for (int i = 0; i < listx_v1.Count; i++)
+                        {
+                            for (int j = 0; j < Grr.GetLength(0); j++)
+                            {
+                                f[i] += Grr[j, 0] * Math.Pow(listx_v1[i], j);
+                            }
+                            dif[i] += Math.Pow((f[i] - listy_v1[i]), 2);
+                            pogreshost += dif[i];
+                        }
+                        pogreshost = pogreshost / listx_v1.Count;
+                        pogreshost = Math.Pow(pogreshost, 0.5);
+                        textBox6.Text = Convert.ToString(pogreshost);
+                        textBox8.Text = X.ToString();
+                        for (int j = 0; j < listx_v1.Count; j++)
+                        {
+                            y = 0;
+                            for (int i = 0; i < Grr.GetLength(0); i++)
+                            {
+                                y += Grr[i, 0] * Math.Pow(listx_v1[j], i);
+                            }
+                            chart1.Series["Series1"].Points.AddXY(listx_v1[j], y);
+                        }
+                        chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+                        for (int i = 0; i < listx_v1.Count; i++)
+                        {
+                            chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
+                        }
+                        chart1.Series["Series2"].ChartType = SeriesChartType.Point;
+                    }
+                    /*Obratnaya = Obr(Peremn);
                     double[,] Grr = new double[1, 1];
                     Grr = Peremnogenie_matriz(Obratnaya, m, m, Beta, 1);
                     double y = 0;
@@ -294,7 +346,7 @@ namespace WindowsFormsApplication4
                     pogreshost = pogreshost / listx_v1.Count;
                     pogreshost = Math.Pow(pogreshost, 0.5);
                     //textBox6.Text = Convert.ToString(pogreshost);
-                    textBox8.Text = X.ToString();
+                    textBox8.Text = X.ToString(); 
                     for (int j = 0; j < listx_v1.Count; j++)
                     {
                         y = 0;
@@ -309,7 +361,7 @@ namespace WindowsFormsApplication4
                     {
                         chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
                     }
-                    chart1.Series["Series2"].ChartType = SeriesChartType.Point;
+                    chart1.Series["Series2"].ChartType = SeriesChartType.Point;*/
                 }
                 listx_v1.Clear();
                 listy_v1.Clear();
@@ -412,6 +464,83 @@ namespace WindowsFormsApplication4
                 }
             }
             return matr;
+        }
+        public double[,] Gauss(double[,] dd, double[,] bb)
+        {
+            double max = dd[0, 0];
+            double z = 0;
+            bool bbb = true;
+            double h = 0;
+            int schetchik = 0;
+            double umnogrnie = 1;
+            for (int i = schetchik; i < dd.GetLength(0); i++)
+            {
+                max = dd[i, i];
+                int nomer = i;
+                for (int j = schetchik; j < dd.GetLength(1); j++)
+                {
+                    if (Math.Abs(dd[j, i]) > Math.Abs(max))
+                    {
+                        max = dd[j, i];
+                        for (int u = schetchik; u < dd.GetLength(1); u++)
+                        {
+                            z = dd[j, u];
+                            dd[j, u] = dd[nomer, u];
+                            dd[nomer, u] = z;
+                        }
+                        z = bb[j, 0];
+                        bb[j, 0] = bb[nomer, 0];
+                        bb[nomer, 0] = z;
+                    }
+                }
+                for (int yy = schetchik + 1; yy < dd.GetLength(0); yy++)
+                {
+                    double mnog = Math.Abs(dd[yy, schetchik] / max);
+
+                    for (int kk = schetchik + 1; kk < dd.GetLength(1); kk++)
+                    {
+                        if ((dd[yy, schetchik] > 0 && dd[schetchik, schetchik] > 0) || (dd[yy, schetchik] < 0 && dd[schetchik, schetchik] < 0))
+                        {
+                            dd[yy, kk] = dd[yy, kk] - dd[schetchik, kk] * mnog;
+                        }
+
+                        if ((dd[yy, schetchik] > 0 && dd[schetchik, schetchik] < 0) || (dd[yy, schetchik] < 0 && dd[schetchik, schetchik] > 0))
+                        {
+                            dd[yy, kk] = dd[yy, kk] + dd[schetchik, kk] * mnog;
+                        }
+                    }
+                    if ((dd[yy, schetchik] > 0 && dd[schetchik, schetchik] > 0) || (dd[yy, schetchik] < 0 && dd[schetchik, schetchik] < 0))
+                    {
+                        bb[yy, 0] = bb[yy, 0] - bb[schetchik, 0] * mnog;
+                    }
+                    if ((dd[yy, schetchik] > 0 && dd[schetchik, schetchik] < 0) || (dd[yy, schetchik] < 0 && dd[schetchik, schetchik] > 0))
+                    {
+                        bb[yy, 0] = bb[yy, 0] + bb[schetchik, 0] * mnog;
+                    }
+                    dd[yy, schetchik] = 0;
+                }
+
+                schetchik++;
+            }
+            double[,] Matrix = new double[dd.GetLength(0), 1];
+            double n = 0;
+            int k = dd.GetLength(1);
+
+            for (int i = Matrix.GetLength(0) - 1; i >= 0; i--)
+            {
+                Matrix[i, 0] = bb[i, 0];
+                for (int j = Matrix.GetLength(0) - 1; j > i; j--)
+                {
+                    Matrix[i, 0] -= dd[i, j] * Matrix[j, 0];
+                }
+
+                if (dd[i, i] == 0 || bb[i, 0] == 0)//проверка - есть ли вобще решения
+                    bbb = false;
+                Matrix[i, 0] = Matrix[i, 0] / dd[i, i];
+            }
+
+            return Matrix;
+
         }
     }
 }
