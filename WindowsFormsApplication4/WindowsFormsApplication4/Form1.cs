@@ -15,8 +15,8 @@ namespace WindowsFormsApplication4
 
     public partial class Form1 : Form
     {
-        double x0; // начальное и конечное значения
-        double xK;
+        double x0=0; // начальное и конечное значения
+        double xK=0;
         double step;// шаг
         int n; // кол-во точек во входных данных
         int m;// порядок полинома
@@ -41,8 +41,8 @@ namespace WindowsFormsApplication4
             textBox6.ReadOnly = true;
             textBox7.ReadOnly = true;
             textBox8.ReadOnly = true;
-            //label6.Visible = false;
-            //textBox6.Visible = false;
+            label6.Visible = false;
+            textBox6.Visible = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -246,7 +246,7 @@ namespace WindowsFormsApplication4
                     count++;
                 }
                 m += 1;
-                if (X < x0 || X > xK)
+                if (X < listx_v1[0] || X > listx_v1[listx_v1.Count-1])
                 {
                     MessageBox.Show("Введенный Х не попадает в заданный диапазон.");
                     textBox5.Text = "";
@@ -255,72 +255,75 @@ namespace WindowsFormsApplication4
                 //input ended 
                 if (count == 0)
                 {
-                    int n = listx_v1.Count;
-                    Gramma = new double[n, m];
-                    double[,] Peremn = new double[1, 1];
-                    double z = 1;
-                    for (int i = 0; i < n; i++)
+                    if (radioButton1.Checked == true)
                     {
-                        for (int j = 0; j < m; j++)
+                        int n = listx_v1.Count;
+                        Gramma = new double[n, m];
+                        double[,] Peremn = new double[1, 1];
+                        double z = 1;
+                        for (int i = 0; i < n; i++)
                         {
-                            Gramma[i, j] = Math.Pow(listx_v1[i], j);
-                        }
-                    }
-                    Peremn = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Gramma, m);
-                    double[,] Y = new double[listy_v1.Count, 1];
-                    for (int i = 0; i < listy_v1.Count; i++)
-                    {
-                        Y[i, 0] = listy_v1[i];
-                    }
-                    double[,] Beta = new double[0, 0];
-                    Beta = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Y, 1);
-                    double[,] Obratnaya = new double[1, 1];
-                    double uu = 1;
-                    if (uu==0)
-                    {
-                        MessageBox.Show("Определитель матрицы равен 0! Обратной матрицы не существует! введите другие данные!");
-                    }
-                    if (uu!=0)
-                    {
-                        double[,] Grr = new double[1, 1];//Массив нужен для того, чтобы записать в него матрицу, которая равна произведению Obratnaya на Beta
-                        Grr = Gauss(Peremn, Beta);//Получаем массив коэффициентов полинома
-                        double y = 0;
-                        for (int i = 0; i < Grr.GetLength(0); i++)
-                        {
-                            y += Grr[i, 0] * Math.Pow(X, i);
-                        }
-                        textBox7.Text = y.ToString();
-                        double pogreshost = 0;
-                        double[] dif = new double[listy_v1.Count];
-                        double[] f = new double[listy_v1.Count];
-                        for (int i = 0; i < listx_v1.Count; i++)
-                        {
-                            for (int j = 0; j < Grr.GetLength(0); j++)
+                            for (int j = 0; j < m; j++)
                             {
-                                f[i] += Grr[j, 0] * Math.Pow(listx_v1[i], j);
+                                Gramma[i, j] = Math.Pow(listx_v1[i], j);
                             }
-                            dif[i] += Math.Pow((f[i] - listy_v1[i]), 2);
-                            pogreshost += dif[i];
                         }
-                        pogreshost = pogreshost / listx_v1.Count;
-                        pogreshost = Math.Pow(pogreshost, 0.5);
-                        textBox6.Text = Convert.ToString(pogreshost);
-                        textBox8.Text = X.ToString();
-                        for (int j = 0; j < listx_v1.Count; j++)
+                        Peremn = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Gramma, m);
+                        double[,] Y = new double[listy_v1.Count, 1];
+                        for (int i = 0; i < listy_v1.Count; i++)
                         {
-                            y = 0;
+                            Y[i, 0] = listy_v1[i];
+                        }
+                        double[,] Beta = new double[0, 0];
+                        Beta = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Y, 1);
+                        double[,] Obratnaya = new double[1, 1];
+                        double uu = 1;
+                        if (uu == 0)
+                        {
+                            MessageBox.Show("Определитель матрицы равен 0! Обратной матрицы не существует! введите другие данные!");
+                        }
+                        if (uu != 0)
+                        {
+                            double[,] Grr = new double[1, 1];//Массив нужен для того, чтобы записать в него матрицу, которая равна произведению Obratnaya на Beta
+                            Grr = Gauss(Peremn, Beta);//Получаем массив коэффициентов полинома
+                            double y = 0;
                             for (int i = 0; i < Grr.GetLength(0); i++)
                             {
-                                y += Grr[i, 0] * Math.Pow(listx_v1[j], i);
+                                y += Grr[i, 0] * Math.Pow(X, i);
                             }
-                            chart1.Series["Series1"].Points.AddXY(listx_v1[j], y);
+                            textBox7.Text = y.ToString();
+                            double pogreshost = 0;
+                            double[] dif = new double[listy_v1.Count];
+                            double[] f = new double[listy_v1.Count];
+                            for (int i = 0; i < listx_v1.Count; i++)
+                            {
+                                for (int j = 0; j < Grr.GetLength(0); j++)
+                                {
+                                    f[i] += Grr[j, 0] * Math.Pow(listx_v1[i], j);
+                                }
+                                dif[i] += Math.Pow((f[i] - listy_v1[i]), 2);
+                                pogreshost += dif[i];
+                            }
+                            pogreshost = pogreshost / listx_v1.Count;
+                            pogreshost = Math.Pow(pogreshost, 0.5);
+                            textBox6.Text = Convert.ToString(pogreshost);
+                            textBox8.Text = X.ToString();
+                            for (int j = 0; j < listx_v1.Count; j++)
+                            {
+                                y = 0;
+                                for (int i = 0; i < Grr.GetLength(0); i++)
+                                {
+                                    y += Grr[i, 0] * Math.Pow(listx_v1[j], i);
+                                }
+                                chart1.Series["Series1"].Points.AddXY(listx_v1[j], y);
+                            }
+                            chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+                            for (int i = 0; i < listx_v1.Count; i++)
+                            {
+                                chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
+                            }
+                            chart1.Series["Series2"].ChartType = SeriesChartType.Point;
                         }
-                        chart1.Series["Series1"].ChartType = SeriesChartType.Line;
-                        for (int i = 0; i < listx_v1.Count; i++)
-                        {
-                            chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
-                        }
-                        chart1.Series["Series2"].ChartType = SeriesChartType.Point;
                     }
                     /*Obratnaya = Obr(Peremn);
                     double[,] Grr = new double[1, 1];
