@@ -15,8 +15,8 @@ namespace WindowsFormsApplication4
 
     public partial class Form1 : Form
     {
-        double x0=0; // начальное и конечное значения
-        double xK=0;
+        double x0 = 0; // начальное и конечное значения
+        double xK = 0;
         double step;// шаг
         int n; // кол-во точек во входных данных
         int m;// порядок полинома
@@ -27,9 +27,10 @@ namespace WindowsFormsApplication4
         List<double> listy_v1 = new List<double>();
         List<double> compareX = new List<double>();
         List<double> compareY = new List<double>();
+        double[,] Koeffizienti = new double[1, 1];
         bool check = false;
         bool num = false;
-        int count=0;
+        int count = 0;
         double y = 0;
         public Form1()
         {
@@ -78,7 +79,7 @@ namespace WindowsFormsApplication4
                 textBox3.Text = "";
                 count++;
             }
-            if (step == 0||step<0)
+            if (step == 0 || step < 0)
             {
 
                 MessageBox.Show("Шаг не может быть 0 и, соответственно, меньше 0");
@@ -86,14 +87,14 @@ namespace WindowsFormsApplication4
                 textBox3.Text = "";
                 count++;
             }
-            
+
             if (xK < x0)
             {
                 MessageBox.Show("xk<x0");
                 count++;
             }
             // input ended
-            StreamWriter sw = new StreamWriter("output.txt",false);
+            StreamWriter sw = new StreamWriter("output.txt", false);
             if (count == 0)
             {
                 sw.WriteLine("x\ty");
@@ -103,7 +104,7 @@ namespace WindowsFormsApplication4
                     y = Math.Sin(i) / Math.Pow(Math.Cos(i), 2);
                     listy.Add(y);
                 }
-                if (listx.Count <5)
+                if (listx.Count < 5)
                 {
                     MessageBox.Show("Должно быть не меньше 5 точек");
                     check = true;
@@ -145,47 +146,47 @@ namespace WindowsFormsApplication4
             for (int i = 0; i < listt.Count; i++)
             {
                 if (i % 2 == 0)
-                    listx_v1.Add(Math.Round(double.Parse(listt[i]),2));
+                    listx_v1.Add(Math.Round(double.Parse(listt[i]), 2));
                 if (i % 2 != 0)
-                    listy_v1.Add(Math.Round(double.Parse(listt[i]),2));
+                    listy_v1.Add(Math.Round(double.Parse(listt[i]), 2));
 
             }
-           /* double k=0;
-            for (int i=0;i<listx_v1.Count-1;i++)
-            {
-                k=0;
-                for (int j=0;j<listx_v1.Count-i-1;j++)
-                {
-                    if (listx_v1[j]>listx_v1[j+1])
-                    {
-                        k = listx_v1[j];
-                        listx_v1[j] = listx_v1[j + 1];
-                        listx_v1[j + 1] = k;
-                        k = 0;
-                    }
-                }
-            }
-            for (int i = 0; i < listy_v1.Count - 1; i++)
-            {
-                k = 0;
-                for (int j = 0; j < listy_v1.Count - i - 1; j++)
-                {
-                    if (listy_v1[j] > listy_v1[j + 1])
-                    {
-                        k = listy_v1[j];
-                        listy_v1[j] = listy_v1[j + 1];
-                        listy_v1[j + 1] = k;
-                        k = 0;
-                    }
-                }
-            }*/
-            int counterX =0;
+            /* double k=0;
+             for (int i=0;i<listx_v1.Count-1;i++)
+             {
+                 k=0;
+                 for (int j=0;j<listx_v1.Count-i-1;j++)
+                 {
+                     if (listx_v1[j]>listx_v1[j+1])
+                     {
+                         k = listx_v1[j];
+                         listx_v1[j] = listx_v1[j + 1];
+                         listx_v1[j + 1] = k;
+                         k = 0;
+                     }
+                 }
+             }
+             for (int i = 0; i < listy_v1.Count - 1; i++)
+             {
+                 k = 0;
+                 for (int j = 0; j < listy_v1.Count - i - 1; j++)
+                 {
+                     if (listy_v1[j] > listy_v1[j + 1])
+                     {
+                         k = listy_v1[j];
+                         listy_v1[j] = listy_v1[j + 1];
+                         listy_v1[j + 1] = k;
+                         k = 0;
+                     }
+                 }
+             }*/
+            int counterX = 0;
             int counterY = 0;
             double comparer = 0;
-           for (int i = 0; i < listx_v1.Count;i++ )
+            for (int i = 0; i < listx_v1.Count; i++)
             {
                 comparer = listx_v1[i];
-                for (int j=0;j<listx_v1.Count;j++)
+                for (int j = 0; j < listx_v1.Count; j++)
                 {
                     if (comparer == listx_v1[j])
                         counterX++;
@@ -202,12 +203,12 @@ namespace WindowsFormsApplication4
                 }
             }*/
             bool go = true;
-            StreamWriter sw = new StreamWriter("output.txt",false);
+            StreamWriter sw = new StreamWriter("output.txt", false);
             sw.WriteLine("x\ty");
             for (int i = 0; i < listy_v1.Count; i++)
                 sw.WriteLine("{0}\t{1}", listx_v1[i], listy_v1[i]);
             sw.Close();
-            if (counterX>listx_v1.Count||counterY>listy_v1.Count)
+            if (counterX > listx_v1.Count || counterY > listy_v1.Count)
             {
                 MessageBox.Show("Проблемы с введенными в файл значениями.");
                 go = false;
@@ -246,7 +247,7 @@ namespace WindowsFormsApplication4
                     count++;
                 }
                 m += 1;
-                if (X < listx_v1[0] || X > listx_v1[listx_v1.Count-1])
+                if (X < listx_v1[0] || X > listx_v1[listx_v1.Count - 1])
                 {
                     MessageBox.Show("Введенный Х не попадает в заданный диапазон.");
                     textBox5.Text = "";
@@ -255,19 +256,20 @@ namespace WindowsFormsApplication4
                 //input ended 
                 if (count == 0)
                 {
+                    int n = listx_v1.Count;
+                    Gramma = new double[n, m];
+                    double[,] Peremn = new double[1, 1];
+                    double z = 1;
+                    for (int i = 0; i < n; i++)
+                    {
+                        for (int j = 0; j < m; j++)
+                        {
+                            Gramma[i, j] = Math.Pow(listx_v1[i], j);
+                        }
+                    }
                     if (radioButton1.Checked == true)
                     {
-                        int n = listx_v1.Count;
-                        Gramma = new double[n, m];
-                        double[,] Peremn = new double[1, 1];
-                        double z = 1;
-                        for (int i = 0; i < n; i++)
-                        {
-                            for (int j = 0; j < m; j++)
-                            {
-                                Gramma[i, j] = Math.Pow(listx_v1[i], j);
-                            }
-                        }
+
                         Peremn = Peremnogenie_matriz(Transponirovanie(Gramma, n, m), m, n, Gramma, m);
                         double[,] Y = new double[listy_v1.Count, 1];
                         for (int i = 0; i < listy_v1.Count; i++)
@@ -365,18 +367,89 @@ namespace WindowsFormsApplication4
                         chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
                     }
                     chart1.Series["Series2"].ChartType = SeriesChartType.Point;*/
+                    if (radioButton1.Checked == false)
+                    {
+                        double[,] Ortonormirovannaya = new double[n, m];
+                        //Ортонормируем матрицу Грамма
+                        Ortonormirovannaya = Ortonormirovanie(Gramma);
+                        double[,] Y = new double[listy_v1.Count, 1];//Массив нужен для того, чтобы записать в него y из файла (n штук)             
+                        for (int i = 0; i < listy_v1.Count; i++)
+                        {
+                            //Записываем y из файла в этот массив
+                            Y[i, 0] = listy_v1[i];
+                        }
+                        double[,] Y3 = Peremnogenie_matriz(Transponirovanie(Ortonormirovannaya, n, m), m, n, Y, 1);
+                        //for (int i = 0; i < Y3.GetLength(0); i++)
+                        // MessageBox.Show(" " + Y3[i, 0]);               
+                        //Очищаем chart от прошлых графиков
+                        double[,] xx = new double[m, 1];
+                        for (int i = 0; i < m; i++)
+                        {
+                            xx[i, 0] = Math.Pow(X, i);
+                        }
+                        double[,] change = new double[m, m];
+                        change = Koeffizienti;
+                        int qwe = 5;
+                        double[,] Grr = Gausss(Koeffizienti, xx);//Массив нужен для того, чтобы записать в него матрицу коэффициентов  
+                        Koeffizienti = change;
+                        double y = 0;//Переменная нужна для того, чтобы посчитать значение функции ( с помощью выведенного полинома) для заданного x                    
+                        for (int i = 0; i < Grr.GetLength(0); i++)
+                        {
+                            //Считаем значение функции
+                            y += Grr[i, 0] * Y3[i, 0];
+                        }
+                        //Записываем y в textBox
+                        textBox7.Text = Convert.ToString(y);
+                        /*double pogreshost = 0;//Переменная нужня для вычисления погрешности
+                        double[] dif = new double[L2.Count];//Вспомогательный массив для вычисления погрешности
+                        double[] f = new double[L2.Count];//Вспомогательный массив для вычисления погрешности
+                        for (int i = 0; i < L1.Count; i++)
+                        {
+                            for (int j = 0; j < Grr.GetLength(0); j++)
+                            {
+                                //Вычисляем с помощью полинома значения функции для x
+                                f[i] += Grr[j, 0] * Y3[j,0];
+                            }
+                            //Записываем разность между значением функции для x вчисленной с помощью полинома и значением функции, которое находится в файле.
+                            dif[i] += Math.Pow((f[i] - L2[i]), 2);
+                            pogreshost += dif[i];
+                        }
+                        pogreshost = Math.Sqrt(pogreshost / L1.Count);//Считаем погрешность                   
+                        textBox6.Text = Convert.ToString(pogreshost);//Записываем погрешность в textBox6*/
+                        //Ниже идет работа с графиками
+                        for (int j = 0; j < listx_v1.Count; j++)
+                        {
+                            y = 0;
+                            for (int i = 0; i < m; i++)
+                            {
+                                xx[i, 0] = Math.Pow(listx_v1[j], i);
+                            }
+                            Grr = Gausss(Koeffizienti, xx);
+                            for (int i = 0; i < Grr.GetLength(0); i++)
+                            {
+                                y += Grr[i, 0] * Y3[i, 0];
+                            }
+                            chart1.Series["Series1"].Points.AddXY(listx_v1[j], y);
+                        }
+                        chart1.Series["Series1"].ChartType = SeriesChartType.Line;
+                        for (int i = 0; i < listx_v1.Count; i++)
+                        {
+                            chart1.Series["Series2"].Points.AddXY(listx_v1[i], listy_v1[i]);
+                        }
+                        chart1.Series["Series2"].ChartType = SeriesChartType.Point;
+                    }
+                    listx_v1.Clear();
+                    listy_v1.Clear();
                 }
-                listx_v1.Clear();
-                listy_v1.Clear();
             }
         }
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         public double[,] Transponirovanie(double[,] matrix, int n, int m)
         {
             double[,] matrix_2 = new double[m, n];
@@ -544,6 +617,122 @@ namespace WindowsFormsApplication4
 
             return Matrix;
 
+        }
+        public double[,] Gausss(double[,] dd,double [,] bb)
+        {
+            double max = dd[0, 0];
+            double z = 0;
+            //bbb = true;
+            double h = 0;
+            int schetchik = 0;
+            double umnogrnie = 1;
+            double[,] Matrix = new double[m, 1];
+            double n = 0;
+            //Обратный ход - ищем коэффициенты             
+            for (int i = 0; i < m; i++)
+            {
+                Matrix[i, 0] = bb[i, 0];
+                for (int j = 0; j < i; j++)
+                {
+                    Matrix[i, 0] -= dd[i, j] * Matrix[j, 0];
+                }
+
+                Matrix[i, 0] = Matrix[i, 0] / dd[i, i];
+            }
+            return Matrix;
+        }
+        double[,] Ortonormirovanie(double[,] mass)
+        {
+            double[,] mass2 = new double[mass.GetLength(0), mass.GetLength(1)];
+            Koeffizienti = new double[m, m];
+            for (int i = 0; i < mass2.GetLength(0); i++)
+            {
+                for (int j = 0; j < mass2.GetLength(1); j++)
+                {
+                    mass2[i, j] = mass[i, j];
+                }
+
+            }
+            double e = 0;
+            double ef = 0;
+            double koeff = 0;
+            List<double> f = new List<double>();
+            for (int j = 0; j < mass.GetLength(1); j++)
+            {
+                if (j == 0)
+                {
+                    for (int i = 0; i < mass.GetLength(0); i++)
+                    {
+                        mass2[i, 0] = mass[i, 0] / (Math.Sqrt(mass.GetLength(0)));
+                    }
+                }
+                if (j != 0)
+                {
+                    for (int t = 0; t < j; t++)//Количество раз цикла
+                    {
+                        e = 0;
+                        double e2 = 0;
+                        f = new List<double>();
+                        ef = 0;
+                        double ef2 = 0;
+                        for (int u = 0; u < mass.GetLength(0); u++)//Скалярное перемножение
+                        {
+                            e += mass2[u, t] * mass2[u, t];
+                            f.Add(Math.Pow(mass[u, 1], j));//Подправить 1!
+                            ef += mass2[u, t] * f[u];
+                            if (j == 1)//Вычисляем диагональный элемент треугольной матрицы для нулевого элемента
+                            {
+                                ef2 += Math.Pow(mass[u, 1], j - 1) * mass2[u, t];
+                            }
+                        }
+
+                        if (j == 1 && t == 0)
+                        {
+                            Koeffizienti[0, 0] = ef2 / e;
+                        }
+                        koeff = ef / e;
+                        Koeffizienti[j, t] = koeff;
+
+
+                        for (int p = 0; p < mass.GetLength(0); p++)
+                        {
+                            double z = f[p] - mass2[p, 0] * koeff;
+                            if (t == 0)
+                            {
+                                mass2[p, j] = f[p] - mass2[p, t] * koeff;
+                            }
+                            if (t != 0)
+                            {
+                                mass2[p, j] -= mass2[p, t] * koeff;
+                            }
+                        }
+                        if (t == j - 1)
+                        {
+                            double s = 0;
+                            for (int p = 0; p < mass.GetLength(0); p++)
+                            {
+                                s += Math.Pow(mass2[p, j], 2);
+                            }
+                            for (int p = 0; p < mass.GetLength(0); p++)
+                            {
+                                mass2[p, j] = Math.Round((mass2[p, j] / Math.Sqrt(s)), 5);
+                            }
+                            ef2 = 0;
+                            if (t == j - 1 && j != 0)
+                            {
+                                for (int h = 0; h < mass.GetLength(0); h++)
+                                {
+                                    ef2 += Math.Pow(mass[h, 1], j) * mass2[h, t + 1];
+                                }
+                            }
+                            if (t == j - 1 && j != 0)
+                                Koeffizienti[j, t + 1] = ef2;
+                        }
+                    }
+                }
+
+            }
+            return mass2;
         }
     }
 }
