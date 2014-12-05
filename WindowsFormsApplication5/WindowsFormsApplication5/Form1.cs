@@ -141,12 +141,24 @@ namespace WindowsFormsApplication5
                 textBox8.Text = "";
                 check++;
             }
+            if (to>=17)
+            {
+                MessageBox.Show("Максимальное значение интервала не может быть более или равно 17.");
+                textBox8.Text = "";
+                check++;
+            }
             num = double.TryParse(textBox3.Text, out h);
             if (!num&&check==0)
             {
                 MessageBox.Show("Неправильно введено поле \"Шаг\". Исправьте, пожалуйста;");
                 textBox3.Text = "";
                 check++;
+            }
+            if (from>to)
+            {
+                double qwet = to;
+                to = from;
+                from = qwet;
             }
             if((to-from)/h<3)
             {
@@ -241,7 +253,7 @@ namespace WindowsFormsApplication5
                 //y1 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 0] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 0];
                 //y2 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 1] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 1];
                 StreamWriter sw = new StreamWriter("output2.txt", false);
-                for (double i =from; i <= to; i = i + h)
+                for (double i = from; i <= to; i = i + h)
                 {
                     if (i == from)
                     {
@@ -256,17 +268,17 @@ namespace WindowsFormsApplication5
                     if (i != 0)
                     {
                         t = i;
-                        t = rounding(t,k);
+                        t = rounding(t, k);
                         t = rounding(t, k);
                         //y1 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 0] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 0];
                         //y2 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 1] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 1];
-                        y2 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[1,0] * C1 * Math.Sin(Math.Sqrt(6) * t) + Math.Pow(Math.E, (t * 4)) * C2  * Math.Cos(Math.Sqrt(6) * t)*Sobsvennie_vectora[1,1];
-                        y1 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[0,0] * C1*Math.Cos(Math.Sqrt(6)*t) - Math.Pow(Math.E, (t * 4)) * C2 * Sobsvennie_vectora[0,1]*Math.Sin(Math.Sqrt(6)*t);
+                        y2 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[1, 0] * C1 * Math.Sin(Math.Sqrt(6) * t) + Math.Pow(Math.E, (t * 4)) * C2 * Math.Cos(Math.Sqrt(6) * t) * Sobsvennie_vectora[1, 1];
+                        y1 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[0, 0] * C1 * Math.Cos(Math.Sqrt(6) * t) - Math.Pow(Math.E, (t * 4)) * C2 * Sobsvennie_vectora[0, 1] * Math.Sin(Math.Sqrt(6) * t);
                         y2 = rounding(y2, k);
                         y1 = rounding(y1, k);
                         y2 = rounding(y2, k);
                         y1 = rounding(y1, k);
-                        sw.WriteLine("{0}\t{1}\t{2}",i,y1,y2);
+                        sw.WriteLine("{0}\t{1}\t{2}", i, y1, y2);
                         //chart1.Series["Series1"].Points.AddXY(i, y1);
                         //chart1.Series["Series2"].Points.AddXY(i, y2);
                         y1Array.Add(y1);
@@ -278,11 +290,12 @@ namespace WindowsFormsApplication5
                 //chart1.Series["Series1"].ChartType = SeriesChartType.Line;
                 //chart1.Series["Series2"].ChartType = SeriesChartType.Point;
                 //chart1.Series["Series2"].Color = Color.Red;
+                label9.Text = "Все точки найдены и записаны в файл." + Environment.NewLine + " Нажмите \"Файл\" для просмотра файла" + Environment.NewLine + " или \"Построить\", чтобы построить график" + Environment.NewLine + " и найти y1(t) u y2(t)";
             }
             y1Array.Clear();
             y2Array.Clear();
             tArray.Clear();
-            label9.Text = "Все точки найдены и записаны в файл."+Environment.NewLine+" Нажмите \"Файл\" для просмотра файла"+Environment.NewLine+" или \"Построить\", чтобы построить график"+Environment.NewLine+" и найти y1(t) u y2(t)";
+           // label9.Text = "Все точки найдены и записаны в файл."+Environment.NewLine+" Нажмите \"Файл\" для просмотра файла"+Environment.NewLine+" или \"Построить\", чтобы построить график"+Environment.NewLine+" и найти y1(t) u y2(t)";
             //textBox5.Text = y1.ToString();
             //textBox6.Text = y2.ToString();
         }
