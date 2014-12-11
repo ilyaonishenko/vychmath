@@ -49,6 +49,7 @@ namespace WindowsFormsApplication5
         List<double> w1Array = new List<double>();
         List<double> y1Array = new List<double>();
         List<double> y2Array = new List<double>();
+        List<double> t1Array = new List<double>();
         public Form1()
         {
             InitializeComponent();
@@ -64,7 +65,7 @@ namespace WindowsFormsApplication5
             w1 = value2;
             for (int i = 0; i < (b - a) / step; i++)
             {
-                /*if (i == 0)
+                if (i == 0)
                 {
                     t = a + i * step;
                     w = 1;
@@ -72,8 +73,8 @@ namespace WindowsFormsApplication5
 
                 }
                 else
-                {*/
-                    k1 = step * f(t, w);
+                {
+                    /*k1 = step * f(t, w);
                     q1 = step * f1(t, w1);
                     k2 = step * f(t + step / 2, w + k1 / 2);
                     q2 = step * f1(t + step / 2, w1 + q1 / 2);
@@ -83,16 +84,33 @@ namespace WindowsFormsApplication5
                     q4 = step * f1(t + step, w1 + q3);
                     w = w + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
                     w1 = w1 + (q1 + 2 * q2 + 2 * q3 + q4) / 6;
+                    t = a + i * step;*/
+                    k1 = f(t, w);
+                    q1 = f1(t, w1);
+                    k2 = f(t + step / 2, w + k1 / 2);
+                    q2 = f1(t + step / 2, w1 + q1 / 2);
+                    k3 = f(t + step / 2, w + k2 / 2);
+                    q3 = f1(t + step / 2, w1 + q2 / 2);
+                    k4 = f(t + step, w + k3);
+                    q4 = f1(t + step, w1 + q3);
+                    w = w + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+                    w1 = w1 + (q1 + 2 * q2 + 2 * q3 + q4) / 6;
                     t = a + i * step;
-                //}
-                tArray.Add(t);
+                }
+                t1Array.Add(t);
                 wArray.Add(w);
                 w1Array.Add(w1);
                 //Console.WriteLine("{0} {1} ", t, w);
+               /* y2 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[1, 0] * C1 * Math.Sin(Math.Sqrt(6) * t) + Math.Pow(Math.E, (t * 4)) * C2 * Math.Cos(Math.Sqrt(6) * t) * Sobsvennie_vectora[1, 1];
+                y1 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[0, 0] * C1 * Math.Cos(Math.Sqrt(6) * t) - Math.Pow(Math.E, (t * 4)) * C2 * Sobsvennie_vectora[0, 1] * Math.Sin(Math.Sqrt(6) * t);
+                y2 = rounding(y2, k);
+                y1 = rounding(y1, k);
+                y2 = rounding(y2, k);
+                y1 = rounding(y1, k);*/
             }
             StreamWriter sw = new StreamWriter("output1.txt", false);
-            for (int i = 0; i < tArray.Count; i++)
-                sw.WriteLine("{0}\t{1}\t{2}",tArray[i],wArray[i],w1Array[i]);
+            for (int i = 0; i < t1Array.Count; i++)
+                sw.WriteLine("{0}\t{1}\t{2}",t1Array[i],wArray[i],w1Array[i]);
             sw.Close();
         }
         public double func1(double y1,double y2)
@@ -113,10 +131,12 @@ namespace WindowsFormsApplication5
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            Silv = false;
+            Kutte = false;
             check = 0;
             //StreamWriter sw = new StreamWriter("output.txt",false);//набор значений в файл//
-            chart1.Series["Series1"].Points.Clear();
-            chart1.Series["Series2"].Points.Clear();
+            chart1.Series["y1(t)"].Points.Clear();
+            chart1.Series["y2(t)"].Points.Clear();
             /*num = double.TryParse(textBox1.Text, out y1);
             if (!num)
             {
@@ -165,10 +185,16 @@ namespace WindowsFormsApplication5
                 MessageBox.Show("Слишком мало точек для построения графика!");
                 check++;
             }
+            if (h==0)
+            {
+                MessageBox.Show("Шаг не должен быть равен нуолю. Нужно это исправить.");
+                textBox3.Text = "";
+                check++;
+            }
             if (h<0.0001&&check==0)
             {
                 MessageBox.Show("Скорее всего ничего работать не будет. Вы ввели очень маленький шаг. Он будет конфликтовать с методом округления, которогый используется в программе");
-                textBox3.Text="";
+                //textBox3.Text="";
                 check++;
             }
             num = double.TryParse(textBox4.Text, out t);
@@ -218,13 +244,33 @@ namespace WindowsFormsApplication5
                 sw.WriteLine(rounding(y11, k) + " || " + rounding(y22, k) + " || ");
                 y10 = y11;
                 y20 = y22;
+            }
+            if (check!=0)
+            {
+                button1.Enabled = false;
             }*/
+            if (radioButton1.Checked = false)
+                if (radioButton2.Checked = false)
+                {
+                    check++;
+                    MessageBox.Show("radiobuttons!");
+                }
             if (check==0)
+            {
+                /*if (radioButton1.Checked == true)
+                {
+                    Silv = true;
+                }
+                if (radioButton2.Checked == true)
+                {
+                    Kutte = true;
+                }*/
                 Silv = true;
+            }
             //Kutte = true;
             if (Kutte == true)
             {
-                runge(0, 10, 3, 3, 0.1, new Function(func1), new Function(func2));
+                runge(from, to, Y1, Y2, h, new Function(func1), new Function(func2));
             }
             if (Silv == true)
             {
@@ -253,20 +299,20 @@ namespace WindowsFormsApplication5
                 //y1 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 0] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 0];
                 //y2 = Math.Pow(Math.E, (Sobstvennie_chisla[0, 0] * t)) * Sobsvennie_vectora[0, 1] * C1 + Math.Pow(Math.E, (t * Sobstvennie_chisla[0, 1])) * C2 * Sobsvennie_vectora[1, 1];
                 StreamWriter sw = new StreamWriter("output2.txt", false);
-                for (double i = from; i <= to; i = i + h)
+                for (double i = from; i <= to+h; i = i + h)
                 {
-                    if (i == from)
-                    {
-                        y2 = rounding(y2, k);
-                        y1 = rounding(y2, k);
+                    //if (i == from)
+                    //{
+                     //   y2 = rounding(y2, k);
+                      /*  y1 = rounding(y2, k);
                         y1Array.Add(y1);
                         y2Array.Add(y2);
                         tArray.Add(t);
                         //chart1.Series["Series1"].Points.AddXY(0, Y1);
                         //chart1.Series["Series2"].Points.AddXY(0, Y2);
-                    }
-                    if (i != 0)
-                    {
+                    }*/
+                    //if (i != 0)
+                    //{
                         t = i;
                         t = rounding(t, k);
                         t = rounding(t, k);
@@ -284,7 +330,7 @@ namespace WindowsFormsApplication5
                         y1Array.Add(y1);
                         y2Array.Add(y2);
                         tArray.Add(t);
-                    }
+                   // }
                 }
                 sw.Close();
                 //chart1.Series["Series1"].ChartType = SeriesChartType.Line;
@@ -299,6 +345,17 @@ namespace WindowsFormsApplication5
             //textBox5.Text = y1.ToString();
             //textBox6.Text = y2.ToString();
         }
+        public List<Double> fastSolve (double C1,double C2,double[,] Sobsvennie_vectora,double step)
+        {
+            List<double> answerList = new List<double>();
+            double t = step;
+            double y2 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[1, 0] * C1 * Math.Sin(Math.Sqrt(6) * t) + Math.Pow(Math.E, (t * 4)) * C2 * Math.Cos(Math.Sqrt(6) * t) * Sobsvennie_vectora[1, 1];
+            double y1 = Math.Pow(Math.E, (4 * t)) * Sobsvennie_vectora[0, 0] * C1 * Math.Cos(Math.Sqrt(6) * t) - Math.Pow(Math.E, (t * 4)) * C2 * Sobsvennie_vectora[0, 1] * Math.Sin(Math.Sqrt(6) * t);
+            answerList.Add(t);
+            answerList.Add(y1);
+            answerList.Add(y2);
+            return answerList;
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -308,22 +365,22 @@ namespace WindowsFormsApplication5
             //label3.Visible = false;
             //textBox3.Visible = false;
             label9.Text = "";
+            radioButton1.Visible = false;
+            radioButton2.Visible = false;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             Close();
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("notepad.exe", "output2.txt");
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
-            chart1.Series["Series1"].Points.Clear();
-            chart1.Series["Series2"].Points.Clear();
+            chart1.Series["y1(t)"].Points.Clear();
+            chart1.Series["y2(t)"].Points.Clear();
             List<double> coolArray = new List<double>();//t
             List<double> funnyArray = new List<double>();//y1
             List<double> lovelyArray = new List<double>();//y2
@@ -370,12 +427,12 @@ namespace WindowsFormsApplication5
                     textBox5.Text = funnyArray[i].ToString();
                     textBox6.Text = lovelyArray[i].ToString();
                 }
-                chart1.Series["Series1"].Points.AddXY(coolArray[i],funnyArray[i] );
-                chart1.Series["Series2"].Points.AddXY(coolArray[i],lovelyArray[i]);
+                chart1.Series["y1(t)"].Points.AddXY(coolArray[i],funnyArray[i] );
+                chart1.Series["y2(t)"].Points.AddXY(coolArray[i],lovelyArray[i]);
             }
-            chart1.Series["Series1"].ChartType = SeriesChartType.Line;
-            chart1.Series["Series2"].ChartType = SeriesChartType.Point;
-            chart1.Series["Series2"].Color = Color.Red;
+            chart1.Series["y1(t)"].ChartType = SeriesChartType.Line;
+            chart1.Series["y2(t)"].ChartType = SeriesChartType.Point;
+            chart1.Series["y2(t)"].Color = Color.Red;
         }
     }
 }
