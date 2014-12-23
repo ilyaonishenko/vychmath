@@ -43,6 +43,8 @@
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -170,11 +172,31 @@
             this.textBox6.Size = new System.Drawing.Size(381, 31);
             this.textBox6.TabIndex = 14;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(87, 44);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(48, 26);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "у = ";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(87, 88);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(105, 26);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Точность";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(560, 800);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.textBox6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox5);
@@ -215,6 +237,8 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 
