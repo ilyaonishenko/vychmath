@@ -36,6 +36,8 @@ namespace WindowsFormsApplication6
             label9.Text = "(((x+y-2)^2)/0.6)+(y-0.1)^2-1=0";
             label8.Visible = false;
             label9.Visible = false;
+            label3.Visible = false;
+            textBox3.Visible = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
