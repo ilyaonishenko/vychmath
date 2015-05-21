@@ -146,7 +146,7 @@ public class Matrix
     }
     public Matrix rotationMatrix()
     {
-        Matrix answerArray = onetityMatrix(3);
+        Matrix answerArray = onetityMatrix(cols);
         double newAngle = Math.Cos(angle);
         double newAngleS = Math.Sin(angle);
         for (int i = 0; i < rows; i++)

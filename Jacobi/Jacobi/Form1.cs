@@ -48,8 +48,15 @@ namespace Jacobi
 
         private void Jacoby_Load(object sender, EventArgs e)
         {
-             
+            /*
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture; */
         }
+        // 25x25 with 1 = 4.65
+        // 25x25 with 5 = 4.69
+        // 50x50 with 1 = 3.57.64
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -66,11 +73,11 @@ namespace Jacobi
                 }
             }
             streamReader.Close();
-            label5.Text = "Сделано!!";
+            
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    for (int j = 0; j < N; j++)
+                    for (int j = 0; j < 3; j++)
                     {
                         label7.Text += matrix[i, j];
                         label7.Text += "          ";
@@ -79,6 +86,7 @@ namespace Jacobi
                     label7.Text += Environment.NewLine;
                 }
             }
+            label5.Text = "Сделано!!";
             rotationMatrix = new Matrix(N, N);
             invertedRotationMatrix = new Matrix(N, N);
             identityMatrix = Matrix.IdentityMatrix(N, N);
@@ -86,8 +94,9 @@ namespace Jacobi
 
         private void button4_Click(object sender, EventArgs e)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             E = double.Parse(textBox2.Text);
-            StreamWriter streamWriter = new StreamWriter("output.txt");
             /*for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < N; j++)
@@ -116,6 +125,13 @@ namespace Jacobi
                 invertedRotationMatrix = rotationMatrix;
                 invertedRotationMatrix = invertedRotationMatrix.Invert();
             }
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+            string time = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+            label8.Text = time;
+            StreamWriter streamWriter = new StreamWriter("output.txt");
             streamWriter.WriteLine(matrix);
             streamWriter.WriteLine(norma);
             streamWriter.Close();
