@@ -21,6 +21,8 @@ public class Matrix
     public Matrix U;
     private int[] pi;
     private double detOfP = 1;
+    private double angle;
+    private int[] posArray = new int[2];
 
     public Matrix(int iRows, int iCols)         // Matrix Class constructor
     {
@@ -102,6 +104,18 @@ public class Matrix
             }
         }
     }
+    public double searchAngle()
+    {
+        double answer = 0;
+        if (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]] == 0 && 2 * mat[posArray[0], posArray[1]] > 0)
+            answer = Math.PI / 4;
+        else if (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]] == 0 && 2 * mat[posArray[0], posArray[1]] < 0)
+            answer = -Math.PI / 4;
+        else if (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]] != 0)
+            answer = (Math.Atan((2 * mat[posArray[0], posArray[1]]) / (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]]))) / 2;
+        this.angle = answer;
+        return answer;
+    }
 
 
     public Matrix SolveWith(Matrix v)                        // Function solves Ax = v in confirmity with solution vector "v"
@@ -117,6 +131,39 @@ public class Matrix
         Matrix x = SubsBack(U, z);
 
         return x;
+    }
+    private Matrix onetityMatrix(int n)
+    {
+        Matrix answerArray = new Matrix(n,n);
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+            {
+                if (i == j)
+                    answerArray[i, j] = 1;
+                else answerArray[i, j] = 0;
+            }
+        return answerArray;
+    }
+    public Matrix rotationMatrix()
+    {
+        Matrix answerArray = onetityMatrix(3);
+        double newAngle = Math.Cos(angle);
+        double newAngleS = Math.Sin(angle);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < rows; j++)
+            {
+                if (i == posArray[0])
+                {
+                    answerArray[i, i] = newAngle;
+                    if (j == posArray[1])
+                    {
+                        answerArray[j, j] = newAngle;
+                        answerArray[i, j] = -newAngleS;
+                        answerArray[j, i] = newAngleS;
+                    }
+                }
+            }
+        return answerArray;
     }
 
     public Matrix Invert()                                   // Function returns the inverted matrix
@@ -242,7 +289,7 @@ public class Matrix
         string s = "";
         for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < cols; j++) s += String.Format("{0,5:0.00}", mat[i, j]) + " ";
+            for (int j = 0; j < cols; j++) s += mat[i,j] + " ";
             s += "\r\n";
         }
         return s;
@@ -514,8 +561,23 @@ public class Matrix
                 r[i, j] = m1[i, j] + m2[i, j];
         return r;
     }
-
-    public static string NormalizeMatrixString(string matStr)	// From Andy - thank you! :)
+    public double Norma()
+    {
+        double answer = 0;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                if (i < j)
+                {
+                    answer += Math.Pow(mat[i, j],2);
+                }
+            }
+        }
+        answer = Math.Sqrt(answer);
+        return answer;
+    }
+    public static string NormalizeMatrixString(string matStr)	
     {
         // Remove any multiple spaces
         while (matStr.IndexOf("  ") != -1)
@@ -537,7 +599,6 @@ public class Matrix
     }
     public int[] maxElement()
     {
-        int[] answerArr = new int[2];
         double answer = 0;
         int _i = 0;
         int _j = 0;
@@ -553,9 +614,9 @@ public class Matrix
                 }
             }
         }
-        answerArr[0] = _i;
-        answerArr[1] = _j;
-        return answerArr;
+        posArray[0] = _i;
+        posArray[1] = _j;
+        return posArray;
     }
 
     //   O P E R A T O R S

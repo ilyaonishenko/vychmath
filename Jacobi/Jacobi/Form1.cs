@@ -17,6 +17,12 @@ namespace Jacobi
         public static int N;
         private OpenFileDialog openFileDialog1;
         static Matrix matrix;
+        static Matrix rotationMatrix;
+        static Matrix invertedRotationMatrix;
+        static Matrix identityMatrix;
+        int[] position;
+        static double norma = 10000;
+        static double E = 0;
         public Jacoby()
         {
             InitializeComponent();
@@ -61,10 +67,26 @@ namespace Jacobi
             }
             streamReader.Close();
             label5.Text = "Сделано!!";
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < N; j++)
+                    {
+                        label7.Text += matrix[i, j];
+                        label7.Text += "          ";
+                    }
+                    label7.Text += Environment.NewLine;
+                    label7.Text += Environment.NewLine;
+                }
+            }
+            rotationMatrix = new Matrix(N, N);
+            invertedRotationMatrix = new Matrix(N, N);
+            identityMatrix = Matrix.IdentityMatrix(N, N);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            E = double.Parse(textBox2.Text);
             StreamWriter streamWriter = new StreamWriter("output.txt");
             /*for (int i = 0; i < N; i++)
             {
@@ -75,64 +97,29 @@ namespace Jacobi
                 streamWriter.WriteLine();
             }*/
             //streamWriter.WriteLine(maxElement(matrix).ToString());
-            /*int[] position = new int[2];
-            position = maxElement(matrix);
-            double angle = searchAngle(matrix, position);
-            matrix = rotationMatrix(position, angle);
-            for (int i = 0; i < N; i++)
+            position = new int[2];            
+            rotationMatrix = matrix;
+            position = rotationMatrix.maxElement();
+            rotationMatrix.searchAngle();
+            rotationMatrix = rotationMatrix.rotationMatrix();            
+            invertedRotationMatrix = rotationMatrix;
+            invertedRotationMatrix = invertedRotationMatrix.Invert();
+            while (norma > E)
             {
-                for (int j = 0; j < N; j++)
-                {
-                    streamWriter.Write(matrix[i, j].ToString() + " ");
-                }
-                streamWriter.WriteLine();
-            }*/
+                matrix = invertedRotationMatrix * matrix * rotationMatrix;
+                rotationMatrix = identityMatrix * rotationMatrix;
+                norma = matrix.Norma();
+                rotationMatrix = matrix;
+                position = rotationMatrix.maxElement();
+                rotationMatrix.searchAngle();
+                rotationMatrix = rotationMatrix.rotationMatrix();
+                invertedRotationMatrix = rotationMatrix;
+                invertedRotationMatrix = invertedRotationMatrix.Invert();
+            }
+            streamWriter.WriteLine(matrix);
+            streamWriter.WriteLine(norma);
             streamWriter.Close();
             Process.Start("notepad.exe", "output.txt");
-        }
-        private double searchAngle(double[,] array,int[] posArr)
-        {
-            double answer = 0;
-            if (array[posArr[0], posArr[0]] - array[posArr[1], posArr[1]] == 0 && 2 * array[posArr[0], posArr[1]] > 0)
-                answer = Math.PI / 4;
-            else if (array[posArr[0], posArr[0]] - array[posArr[1], posArr[1]] == 0 && 2 * array[posArr[0], posArr[1]] < 0)
-                answer = -Math.PI / 4;
-            else if (array[posArr[0], posArr[0]] - array[posArr[1], posArr[1]] != 0)
-                answer = (Math.Atan((2 * array[posArr[0], posArr[1]]) / (array[posArr[0], posArr[0]] - array[posArr[1], posArr[1]]))) / 2;
-            return answer;
-        }
-        private double[,] rotationMatrix(int[] posArr,double angle)
-        {
-            double[,] answerArray = onetityMatrix(3);
-            double newAngle = Math.Cos(angle);
-            double newAngleS = Math.Sin(angle);
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < N; j++)
-                {
-                    if (i == posArr[0])
-                    {
-                        answerArray[i, i] = newAngle;
-                        if (j == posArr[1])
-                        {
-                            answerArray[j, j] = newAngle;
-                            answerArray[i, j] = -newAngleS;
-                            answerArray[j, i] = newAngleS;
-                        }
-                    }
-                }
-           return answerArray;
-        }
-        private double[,] onetityMatrix(int n)
-        {
-            double[,] answerArray = new double[n, n];
-            for(int i=0;i<n;i++)
-                for (int j = 0; j < n; j++)
-                {
-                    if (i == j)
-                        answerArray[i, j] = 1;
-                    else answerArray[i, j] = 0;
-                }
-            return answerArray;
         }
     }
 }
