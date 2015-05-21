@@ -20,7 +20,6 @@ namespace Jacobi
         static Matrix rotationMatrix;
         static Matrix invertedRotationMatrix;
         static Matrix identityMatrix;
-        int[] position;
         static double norma = 10000;
         static double E = 0;
         public Jacoby()
@@ -41,7 +40,6 @@ namespace Jacobi
             openFileDialog1.InitialDirectory = @"Z:\Documents\Visual Studio 2013\Projects\Jacobi\Jacobi\bin\Debug";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //Encrypt the selected file. I'll do this later. :)
             }
             label6.Text = openFileDialog1.FileName.Split('\\')[openFileDialog1.FileName.Split('\\').Length - 1];
         }
@@ -73,7 +71,7 @@ namespace Jacobi
                 }
             }
             streamReader.Close();
-            
+            label5.Text = "";
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -97,32 +95,22 @@ namespace Jacobi
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             E = double.Parse(textBox2.Text);
-            /*for (int i = 0; i < N; i++)
-            {
-                for (int j = 0; j < N; j++)
-                {
-                    streamWriter.Write(matrix[i,j].ToString()+" ");
-                }
-                streamWriter.WriteLine();
-            }*/
-            //streamWriter.WriteLine(maxElement(matrix).ToString());
-            position = new int[2];            
-            rotationMatrix = matrix;
-            position = rotationMatrix.maxElement();
+            change(rotationMatrix,matrix);
+            rotationMatrix.maxElement();
             rotationMatrix.searchAngle();
-            rotationMatrix = rotationMatrix.rotationMatrix();            
-            invertedRotationMatrix = rotationMatrix;
+            rotationMatrix.rotationMatrix();            
+            change(invertedRotationMatrix, rotationMatrix);
             invertedRotationMatrix = invertedRotationMatrix.Invert();
             while (norma > E)
             {
                 matrix = invertedRotationMatrix * matrix * rotationMatrix;
                 rotationMatrix = identityMatrix * rotationMatrix;
                 norma = matrix.Norma();
-                rotationMatrix = matrix;
-                position = rotationMatrix.maxElement();
+                change(rotationMatrix, matrix);
+                rotationMatrix.maxElement();
                 rotationMatrix.searchAngle();
-                rotationMatrix = rotationMatrix.rotationMatrix();
-                invertedRotationMatrix = rotationMatrix;
+                rotationMatrix.rotationMatrix();
+                change(invertedRotationMatrix, rotationMatrix);
                 invertedRotationMatrix = invertedRotationMatrix.Invert();
             }
             stopwatch.Stop();
@@ -136,6 +124,16 @@ namespace Jacobi
             streamWriter.WriteLine(norma);
             streamWriter.Close();
             Process.Start("notepad.exe", "output.txt");
+        }
+        private void change(Matrix m1, Matrix m2)
+        {
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    m1[i, j] = m2[i, j];
+                }
+            }
         }
     }
 }

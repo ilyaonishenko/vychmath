@@ -41,7 +41,11 @@ public class Matrix
         get { return mat[iRow, iCol]; }
         set { mat[iRow, iCol] = value; }
     }
-
+    public double[,] _mat
+    {
+        get { return mat; }
+        set { mat = value; }
+    }
     public Matrix GetCol(int k)
     {
         Matrix m = new Matrix(rows, 1);
@@ -104,7 +108,7 @@ public class Matrix
             }
         }
     }
-    public double searchAngle()
+    public void searchAngle()
     {
         double answer = 0;
         if (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]] == 0 && 2 * mat[posArray[0], posArray[1]] > 0)
@@ -114,7 +118,6 @@ public class Matrix
         else if (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]] != 0)
             answer = (Math.Atan((2 * mat[posArray[0], posArray[1]]) / (mat[posArray[0], posArray[0]] - mat[posArray[1], posArray[1]]))) / 2;
         this.angle = answer;
-        return answer;
     }
 
 
@@ -132,21 +135,19 @@ public class Matrix
 
         return x;
     }
-    private Matrix onetityMatrix(int n)
+    private void onetityMatrix(int n)
     {
-        Matrix answerArray = new Matrix(n,n);
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
             {
                 if (i == j)
-                    answerArray[i, j] = 1;
-                else answerArray[i, j] = 0;
+                    mat[i, j] = 1;
+                else mat[i, j] = 0;
             }
-        return answerArray;
     }
-    public Matrix rotationMatrix()
+    public void rotationMatrix()
     {
-        Matrix answerArray = onetityMatrix(cols);
+        onetityMatrix(cols);
         double newAngle = Math.Cos(angle);
         double newAngleS = Math.Sin(angle);
         for (int i = 0; i < rows; i++)
@@ -154,16 +155,15 @@ public class Matrix
             {
                 if (i == posArray[0])
                 {
-                    answerArray[i, i] = newAngle;
+                    mat[i, i] = newAngle;
                     if (j == posArray[1])
                     {
-                        answerArray[j, j] = newAngle;
-                        answerArray[i, j] = -newAngleS;
-                        answerArray[j, i] = newAngleS;
+                        mat[j, j] = newAngle;
+                        mat[i, j] = -newAngleS;
+                        mat[j, i] = newAngleS;
                     }
                 }
             }
-        return answerArray;
     }
 
     public Matrix Invert()                                   // Function returns the inverted matrix
@@ -597,7 +597,7 @@ public class Matrix
         matStr = matStr.Replace("|", "\r\n");
         return matStr.Trim();
     }
-    public int[] maxElement()
+    public void maxElement()
     {
         double answer = 0;
         int _i = 0;
@@ -616,7 +616,6 @@ public class Matrix
         }
         posArray[0] = _i;
         posArray[1] = _j;
-        return posArray;
     }
 
     //   O P E R A T O R S
