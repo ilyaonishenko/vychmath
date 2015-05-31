@@ -30,6 +30,10 @@ public class Matrix
         cols = iCols;
         mat = new double[rows, cols];
     }
+    public double getAngle()
+    {
+        return this.angle;
+    }
 
     public Boolean IsSquare()
     {
@@ -578,20 +582,58 @@ public class Matrix
         }
         for (int i = 0; i < m1.rows; i++)
         {
-            for (int j = 0; j < m1.rows; j++)
+            if (i == _i || i == _j)
             {
-                if (j == _j || i == _i || i == _j)
+                for (int j = 0; j < m1.rows; j++)
                 {
-                    if (result[i, j] != 0)
-                        break;
-                    for (int k = 0; k < m1.rows; k++)
-                    {
-                        result[i, j] += m1[i, k] * m2[k, j];
-                    }
+                    //if (j == _j)
+                    //{
+                        if (result[i, j] != 0)
+                            break;
+                        for (int k = 0; k < m1.rows; k++)
+                        {
+                            result[i, j] += m1[i, k] * m2[k, j];
+                        }
+                    //}
+                }
+            }
+            else
+            {
+                if (result[i, _j] != 0)
+                    continue;
+                for (int k = 0; k < m1.rows; k++)
+                {
+                    result[i, _j] += m1[i, k] * m2[k, _j];
                 }
             }
         }
         return result;
+    }
+    public void hopeNotStupid(double[] array, int _i, int _j)
+    {
+        double[,] array2 = new double[cols,cols];
+        array2[_i, _i] = array[1] * array[1] * mat[_i, _i] - 2 * array[0] * array[1] * mat[_i, _j] + array[0] * array[0] * mat[_j, _j];
+        array2[_j, _j] = array[0] * array[0] * mat[_i, _i] + 2 * array[0] * array[1] * mat[_i, _j] + array[1] * array[1] * mat[_j, _j];
+        array2[_i, _j] = (array[1] * array[1] - array[0] * array[0]) * mat[_i, _j] + array[0] * array[1] * (mat[_i, _i] - mat[_j, _j]);
+        array2[_j, _i] = array2[_i, _j];
+        for (int k = 0; k < cols; k++)
+        {
+            if (k != _j && k != _i)
+            {
+                array2[_i, k] = array[1] * mat[_i, k] - array[0] * mat[_j, k];
+                array2[_j, k] = array[0] * mat[_i, k] + array[1] * mat[_j, k];
+            }
+            array2[k, _i] = array2[_i, k];
+            array2[k, _j] = array2[_j, k];
+        }
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (array2[i, j] != 0)
+                    mat[i, j] = array2[i, j];
+            }
+        }
     }
     public Matrix MaybeNotStupidMultiplyL(Matrix m1, Matrix m2, int _i, int _j)
     {
@@ -611,19 +653,33 @@ public class Matrix
         }
         for (int i = 0; i < m1.rows; i++)
         {
-            for (int j = 0; j < m1.rows; j++)
+            if (i == _i || i == _j)
             {
-                if (j == _j || i == _i || i == _j)
+                for (int j = 0; j < m1.rows; j++)
                 {
-                    if (result[i, j] != 0)
-                        break;
-                    for (int k = 0; k < m1.rows; k++)
-                    {
-                        result[i, j] += m1[i, k] * m2[k, j];
+                    //if (j == _j)
+                    //{
+                        if (result[i, j] != 0)
+                            break;
+                        for (int k = 0; k < m1.rows; k++)
+                        {
+                            result[i, j] += m1[i, k] * m2[k, j];
+                        }
                         if (i == m1.rows - 1)
                             result[j, i] = result[i, j];
-                    }
+                   // }
                 }
+            }
+            else
+            {
+                if (result[i, _j] != 0)
+                    continue;
+                for (int k = 0; k < m1.rows; k++)
+                {
+                    result[i, _j] += m1[i, k] * m2[k, _j];
+                }
+                if (i == m1.rows - 1)
+                    result[_j, i] = result[i, _j];
             }
         }
         return result;
