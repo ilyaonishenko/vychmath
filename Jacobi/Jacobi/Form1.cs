@@ -206,12 +206,25 @@ namespace Jacobi
                 array2[k, _i] = array2[_i, k];
                 array2[k, _j] = array2[_j, k];
             }
-            for (int i = 0; i < N; i++)
+            /*for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < N; j++)
                 {
                     if (array2[i, j] != 0)
                         matrix[i, j] = array2[i, j];
+                }
+            }*/
+            matrix[_i, _i] = array2[_i, _i];
+            matrix[_j, _j] = array2[_j, _j];
+            matrix[_i, _j] =matrix[_j,_i]= array2[_i, _j];
+            for (int k = 0; k < N; k++)
+            {
+                if (k != _j && k != _i)
+                {
+                    matrix[_i, k] = array2[_i, k];
+                    matrix[k, _i] = array2[_i, k];
+                    matrix[_j, k] = array2[_j, k];
+                    matrix[k, _j] = array2[_j, k];
                 }
             }
         }
