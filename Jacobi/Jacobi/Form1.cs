@@ -87,7 +87,7 @@ namespace Jacobi
             label5.Text = "Сделано!!";
             rotationMatrix = new Matrix(N, N);
             invertedRotationMatrix = new Matrix(N, N);
-            identityMatrix = Matrix.IdentityMatrix(N, N);
+            //identityMatrix = Matrix.IdentityMatrix(N, N);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -100,26 +100,61 @@ namespace Jacobi
             rotationMatrix.searchAngle();
             rotationMatrix.rotationMatrix();            
             change(invertedRotationMatrix, rotationMatrix);
-            invertedRotationMatrix = invertedRotationMatrix.Invert();
-            while (norma > E)
-            {
-                matrix = invertedRotationMatrix * matrix * rotationMatrix;
-                rotationMatrix = identityMatrix * rotationMatrix;
+            //invertedRotationMatrix = invertedRotationMatrix.Transpose(invertedRotationMatrix);
+            //invertedRotationMatrix = invertedRotationMatrix.Invert();
+            invertedRotationMatrix.Transpose();
+            StreamWriter streamWriter = new StreamWriter("output.txt");
+            //while (norma > E)
+            //{
+
+            streamWriter.WriteLine("matrix");
+            streamWriter.WriteLine(matrix);
+            streamWriter.WriteLine("inverted");
+            streamWriter.WriteLine(invertedRotationMatrix);
+            streamWriter.WriteLine("rotation");
+            streamWriter.WriteLine(rotationMatrix);
+            int psevdoI = rotationMatrix.MAINI();
+            int psevdoJ = rotationMatrix.MAINJ();
+            //streamWriter.WriteLine("psevdoi " + psevdoI);
+            //streamWriter.WriteLine("psevdoj " + psevdoJ);
+            //matrix = invertedRotationMatrix * matrix * rotationMatrix;
+            //matrix = matrix.StupidMultiply(invertedRotationMatrix, matrix);
+                //matrix = matrix.SimmetricMultiply1(invertedRotationMatrix, matrix);
+            //matrix = matrix.StupidSimmetricMultiply(invertedRotationMatrix, matrix);
+            matrix = matrix.MaybeNotStupidMultiplyR(invertedRotationMatrix, matrix, psevdoI, psevdoJ);
+                
+            streamWriter.WriteLine("matrix");
+            streamWriter.WriteLine(matrix);
+            //matrix = matrix.StupidSimmetricMultiply(matrix, rotationMatrix);
+            //matrix = matrix.SimmetricMultiply1(matrix, rotationMatrix);
+                //matrix = matrix.StupidMultiply(matrix, rotationMatrix);
+            matrix = matrix.MaybeNotStupidMultiplyL(matrix, rotationMatrix, psevdoJ, psevdoI);
+                //identityMatrix = identityMatrix * rotationMatrix;
+            streamWriter.WriteLine("matrix");
+            streamWriter.WriteLine(matrix);
+
+
+
                 norma = matrix.Norma();
                 change(rotationMatrix, matrix);
                 rotationMatrix.maxElement();
                 rotationMatrix.searchAngle();
                 rotationMatrix.rotationMatrix();
                 change(invertedRotationMatrix, rotationMatrix);
-                invertedRotationMatrix = invertedRotationMatrix.Invert();
-            }
+                invertedRotationMatrix.Transpose();
+            //}
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             string time = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
             label8.Text = time;
-            StreamWriter streamWriter = new StreamWriter("output.txt");
+            StreamWriter streamWriter0 = new StreamWriter("time.txt",true);
+            streamWriter0.Write("N= " + N + " ");
+            streamWriter0.Write("E= " + E + " ");
+            streamWriter0.Write(time + "\n");
+            streamWriter0.Close();
+            //StreamWriter streamWriter = new StreamWriter("output.txt");
             streamWriter.WriteLine(matrix);
             streamWriter.WriteLine(norma);
             streamWriter.Close();

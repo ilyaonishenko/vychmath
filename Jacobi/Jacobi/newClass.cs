@@ -295,13 +295,29 @@ public class Matrix
         return s;
     }
 
-    public static Matrix Transpose(Matrix m)              // Matrix transpose, for any rectangular matrix
+    public Matrix Transpose(Matrix m)              // Matrix transpose, for any rectangular matrix
     {
         Matrix t = new Matrix(m.cols, m.rows);
         for (int i = 0; i < m.rows; i++)
             for (int j = 0; j < m.cols; j++)
                 t[j, i] = m[i, j];
         return t;
+    }
+    public void Transpose()
+    {
+        double temp = 0;
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (i > j)
+                {
+                    temp = mat[i, j];
+                    mat[i, j] = mat[j, i];
+                    mat[j, i] = temp;
+                }
+            }
+        }
     }
 
     public static Matrix Power(Matrix m, int pow)           // Power matrix to exponent
@@ -533,7 +549,7 @@ public class Matrix
                 C[i, j] = f[l, 1 + 1][i - h, j - h] - f[l, 1 + 2][i - h, j - h] + f[l, 1 + 3][i - h, j - h] + f[l, 1 + 6][i - h, j - h];
     }
 
-    public static Matrix StupidMultiply(Matrix m1, Matrix m2)                  // Stupid matrix multiplication
+    public Matrix StupidMultiply(Matrix m1, Matrix m2)                  // Stupid matrix multiplication
     {
         if (m1.cols != m2.rows) throw new MException("Wrong dimensions of matrix!");
 
@@ -543,6 +559,143 @@ public class Matrix
                 for (int k = 0; k < m1.cols; k++)
                     result[i, j] += m1[i, k] * m2[k, j];
         return result;
+    }
+    public Matrix MaybeNotStupidMultiplyR(Matrix m1, Matrix m2, int _i, int _j)
+    {
+        Matrix result = ZeroMatrix(m1.rows, m2.rows);
+        for (int i = 0; i < m1.rows; i++)
+        {
+            if (i != _i && i != _j)
+            {
+                for (int j = 0; j < m1.rows; j++)
+                {
+                    if (j != _j)
+                    {
+                        result[i, j] = m2[i, j];
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < m1.rows; i++)
+        {
+            for (int j = 0; j < m1.rows; j++)
+            {
+                if (j == _j || i == _i || i == _j)
+                {
+                    if (result[i, j] != 0)
+                        break;
+                    for (int k = 0; k < m1.rows; k++)
+                    {
+                        result[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    public Matrix MaybeNotStupidMultiplyL(Matrix m1, Matrix m2, int _i, int _j)
+    {
+        Matrix result = ZeroMatrix(m1.rows, m2.rows);
+        for (int i = 0; i < m1.rows; i++)
+        {
+            if (i != _i && i != _j)
+            {
+                for (int j = 0; j < m1.rows; j++)
+                {
+                    if (j != _j && j != _i)
+                    {
+                        result[i, j] = m1[i, j];
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < m1.rows; i++)
+        {
+            for (int j = 0; j < m1.rows; j++)
+            {
+                if (j == _j || i == _i || i == _j)
+                {
+                    if (result[i, j] != 0)
+                        break;
+                    for (int k = 0; k < m1.rows; k++)
+                    {
+                        result[i, j] += m1[i, k] * m2[k, j];
+                        if (i == m1.rows - 1)
+                            result[j, i] = result[i, j];
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    public Matrix SimmetricMultiply1(Matrix m1, Matrix m2)
+    {
+        Matrix answer = ZeroMatrix(cols, cols);
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (i == j)
+                {
+                    for (int k = 0; k < cols; k++)
+                    {
+                        answer[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+                else if (j>i)
+                {
+                    for (int k = 0; k < cols; k++)
+                    {
+                        /*double temp = m1[i, k] * m2[k, j];
+                        //answer[i, j] += temp;
+                        if (temp != 0)
+                        {
+                            if (k == i || k == j)
+                            {
+                                answer[i, j] += temp;
+                                answer[j, i] -= temp; 
+                            }
+                            else
+                            {
+                                answer[i, j] += temp;
+                                answer[j, i] += temp;
+                            }
+                        }*/
+                            answer[i, j] += m1[i, k] * m2[k, j];
+                    }
+                    answer[j, i] = -answer[i, j];
+                }
+                else { }
+            }
+        }
+            return answer;
+    }
+    public Matrix StupidSimmetricMultiply(Matrix m1, Matrix m2)
+    {
+        Matrix answer = ZeroMatrix(cols, cols);
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (i == j)
+                {
+                    for (int k = 0; k < cols; k++)
+                    {
+                        answer[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+                else if (j>i)
+                {
+                    for (int k = 0; k < cols; k++)
+                    {
+                        answer[i, j] += m1[i, k] * m2[k, j];
+                    }
+                    answer[j, i] = answer[i, j];
+                }
+                else { }
+            }
+        }
+        return answer;
     }
     private static Matrix Multiply(double n, Matrix m)                          // Multiplication by constant n
     {
@@ -576,7 +729,7 @@ public class Matrix
         }
         answer = Math.Sqrt(answer);
         return answer;
-    }
+    } 
     public static string NormalizeMatrixString(string matStr)	
     {
         // Remove any multiple spaces
@@ -616,6 +769,14 @@ public class Matrix
         }
         posArray[0] = _i;
         posArray[1] = _j;
+    }
+    public int MAINI()
+    {
+        return posArray[0];
+    }
+    public int MAINJ()
+    {
+        return posArray[1];
     }
 
     //   O P E R A T O R S

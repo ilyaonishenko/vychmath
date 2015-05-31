@@ -80,9 +80,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\input1.txt" />
+    <Content Include="bin\Debug\input1000_5.txt" />
+    <Content Include="bin\Debug\input100_1.txt" />
+    <Content Include="bin\Debug\input100_5.txt" />
+    <Content Include="bin\Debug\input10_1.txt" />
+    <Content Include="bin\Debug\input128_1.txt" />
+    <Content Include="bin\Debug\input2000_5.txt" />
     <Content Include="bin\Debug\input25_1.txt" />
     <Content Include="bin\Debug\input25_5.txt" />
+    <Content Include="bin\Debug\input4_1.txt" />
+    <Content Include="bin\Debug\input500_5.txt" />
     <Content Include="bin\Debug\input50_1.txt" />
+    <Content Include="bin\Debug\input64_1.txt" />
+    <Content Include="bin\Debug\input99_1.txt" />
+    <Content Include="bin\Debug\time.txt" />
+    <Content Include="bin\Debug\input4_0.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
