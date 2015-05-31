@@ -16,12 +16,12 @@ namespace Jacobi
     {
         public static int N;
         private OpenFileDialog openFileDialog1;
-        static Matrix matrix;
-        static Matrix rotationMatrix;
-        static Matrix invertedRotationMatrix;
-        static Matrix identityMatrix;
         static double norma = 10000;
         static double E = 0;
+        double[,] matrix;
+        int greatI = 0;
+        int greatJ = 0;
+        double angle = 0;
         public Jacoby()
         {
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace Jacobi
         private void button3_Click(object sender, EventArgs e)
         {
             N = int.Parse(textBox1.Text);
-            matrix = new Matrix(N, N);
+            matrix = new double[N,N];
             StreamReader streamReader = File.OpenText(openFileDialog1.FileName);
             for (int i = 0; i < N; i++)
             {
@@ -85,8 +85,8 @@ namespace Jacobi
                 }
             }
             label5.Text = "Сделано!!";
-            rotationMatrix = new Matrix(N, N);
-            invertedRotationMatrix = new Matrix(N, N);
+            //rotationMatrix = new Matrix(N, N);
+            //invertedRotationMatrix = new Matrix(N, N);
             //identityMatrix = Matrix.IdentityMatrix(N, N);
         }
 
@@ -95,18 +95,18 @@ namespace Jacobi
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             E = double.Parse(textBox2.Text);
-            change(rotationMatrix,matrix);
-            rotationMatrix.maxElement();
-            rotationMatrix.searchAngle();
+            //change(rotationMatrix,matrix);
+            maxElement();
+            searchAngle();
             double[] angleArray = new double[2];
-            angleArray[0] = Math.Sin(rotationMatrix.getAngle());
-            angleArray[1] = Math.Cos(rotationMatrix.getAngle());
-            rotationMatrix.rotationMatrix();            
-            change(invertedRotationMatrix, rotationMatrix);
+            angleArray[0] = Math.Sin(angle);
+            angleArray[1] = Math.Cos(angle);
+            //rotationMatrix.rotationMatrix();            
+            //change(invertedRotationMatrix, rotationMatrix);
             //invertedRotationMatrix = invertedRotationMatrix.Transpose(invertedRotationMatrix);
             //invertedRotationMatrix = invertedRotationMatrix.Invert();
-            invertedRotationMatrix.Transpose();
-            StreamWriter streamWriter = new StreamWriter("output.txt");
+            //invertedRotationMatrix.Transpose();
+            //StreamWriter streamWriter = new StreamWriter("output.txt");
             while (norma > E)
             {
 
@@ -116,8 +116,6 @@ namespace Jacobi
             streamWriter.WriteLine(invertedRotationMatrix);
             streamWriter.WriteLine("rotation");
             streamWriter.WriteLine(rotationMatrix);*/
-            int psevdoI = rotationMatrix.MAINI();
-            int psevdoJ = rotationMatrix.MAINJ();
             //streamWriter.WriteLine("psevdoi " + psevdoI);
             //streamWriter.WriteLine("psevdoj " + psevdoJ);
             //matrix = invertedRotationMatrix * matrix * rotationMatrix;
@@ -135,18 +133,18 @@ namespace Jacobi
                 //identityMatrix = identityMatrix * rotationMatrix;
             //streamWriter.WriteLine("matrix");
             //streamWriter.WriteLine(matrix);
-            matrix.hopeNotStupid(angleArray,psevdoI,psevdoJ);
+            hopeNotStupid(angleArray,greatI,greatJ);
 
 
-                norma = matrix.Norma();
-                change(rotationMatrix, matrix);
-                rotationMatrix.maxElement();
-                rotationMatrix.searchAngle();
-                rotationMatrix.rotationMatrix();
-                angleArray[0] = Math.Sin(rotationMatrix.getAngle());
-                angleArray[1] = Math.Cos(rotationMatrix.getAngle());
-                change(invertedRotationMatrix, rotationMatrix);
-                invertedRotationMatrix.Transpose();
+                norma = Norma();
+                //change(rotationMatrix, matrix);
+                maxElement();
+                searchAngle();
+                //rotationMatrix.rotationMatrix();
+                angleArray[0] = Math.Sin(angle);
+                angleArray[1] = Math.Cos(angle);
+                //change(invertedRotationMatrix, rotationMatrix);
+                //invertedRotationMatrix.Transpose();
             }
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
@@ -159,8 +157,13 @@ namespace Jacobi
             streamWriter0.Write("E= " + E + " ");
             streamWriter0.Write(time + "\n");
             streamWriter0.Close();
-            //StreamWriter streamWriter = new StreamWriter("output.txt");
-            streamWriter.WriteLine(matrix);
+            StreamWriter streamWriter = new StreamWriter("output.txt");
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                    streamWriter.Write(matrix[i,j]+" ");
+                streamWriter.WriteLine();
+            }
             streamWriter.WriteLine(norma);
             streamWriter.Close();
             Process.Start("notepad.exe", "output.txt");
@@ -175,5 +178,78 @@ namespace Jacobi
                 }
             }
         }
+        public void searchAngle()
+        {
+            double answer = 0;
+            if (matrix[greatI, greatI] - matrix[greatJ, greatJ] == 0 && 2 * matrix[greatI, greatJ] > 0)
+                answer = Math.PI / 4;
+            else if (matrix[greatI, greatI] - matrix[greatJ, greatJ] == 0 && 2 * matrix[greatI, greatJ] < 0)
+                answer = -Math.PI / 4;
+            else if (matrix[greatI, greatI] - matrix[greatJ, greatJ] != 0)
+                answer = (Math.Atan((2 * matrix[greatI, greatJ]) / (matrix[greatI, greatI] - matrix[greatJ, greatJ]))) / 2;
+            this.angle = answer;
+        }
+        public void hopeNotStupid(double[] array, int _i, int _j)
+        {
+            double[,] array2 = new double[N, N];
+            array2[_i, _i] = array[1] * array[1] * matrix[_i, _i] - 2 * array[0] * array[1] * matrix[_i, _j] + array[0] * array[0] * matrix[_j, _j];
+            array2[_j, _j] = array[0] * array[0] * matrix[_i, _i] + 2 * array[0] * array[1] * matrix[_i, _j] + array[1] * array[1] * matrix[_j, _j];
+            array2[_i, _j] = (array[1] * array[1] - array[0] * array[0]) * matrix[_i, _j] + array[0] * array[1] * (matrix[_i, _i] - matrix[_j, _j]);
+            array2[_j, _i] = array2[_i, _j];
+            for (int k = 0; k < N; k++)
+            {
+                if (k != _j && k != _i)
+                {
+                    array2[_i, k] = array[1] * matrix[_i, k] - array[0] * matrix[_j, k];
+                    array2[_j, k] = array[0] * matrix[_i, k] + array[1] * matrix[_j, k];
+                }
+                array2[k, _i] = array2[_i, k];
+                array2[k, _j] = array2[_j, k];
+            }
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    if (array2[i, j] != 0)
+                        matrix[i, j] = array2[i, j];
+                }
+            }
+        }
+        public void maxElement()
+        {
+            double answer = 0;
+            int _i = 0;
+            int _j = 0;
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    if (i != j && answer < Math.Abs(matrix[i, j]))
+                    {
+                        answer = Math.Abs(matrix[i, j]);
+                        _i = i;
+                        _j = j;
+                    }
+                }
+            }
+            greatI = _i;
+            greatJ = _j;
+        }
+        public double Norma()
+        {
+            double answer = 0;
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    if (i < j)
+                    {
+                        answer += Math.Pow(matrix[i, j], 2);
+                    }
+                }
+            }
+            answer = Math.Sqrt(answer);
+            return answer;
+        } 
     }
 }
