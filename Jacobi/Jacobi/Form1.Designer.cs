@@ -42,6 +42,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -116,12 +117,13 @@
             this.label4.Size = new System.Drawing.Size(201, 26);
             this.label4.TabIndex = 7;
             this.label4.Text = "Введите точность:";
+            this.label4.Visible = false;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(460, 435);
+            this.button4.Location = new System.Drawing.Point(134, 444);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(153, 42);
+            this.button4.Size = new System.Drawing.Size(307, 42);
             this.button4.TabIndex = 8;
             this.button4.Text = "Рассчитать";
             this.button4.UseVisualStyleBackColor = true;
@@ -153,10 +155,11 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(230, 441);
+            this.textBox2.Location = new System.Drawing.Point(228, 550);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(198, 31);
             this.textBox2.TabIndex = 12;
+            this.textBox2.Visible = false;
             // 
             // label8
             // 
@@ -167,11 +170,21 @@
             this.label8.TabIndex = 13;
             this.label8.Text = "x";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(356, 510);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(23, 26);
+            this.label9.TabIndex = 15;
+            this.label9.Text = "x";
+            // 
             // Jacoby
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(625, 593);
+            this.ClientSize = new System.Drawing.Size(647, 593);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label7);
@@ -210,6 +223,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 
